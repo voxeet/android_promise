@@ -10,9 +10,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import eu.codlab.simplepromise.Promise;
-import eu.codlab.simplepromise.PromiseExec;
-import eu.codlab.simplepromise.PromiseSolver;
-import eu.codlab.simplepromise.Solver;
+import eu.codlab.simplepromise.solve.PromiseExec;
+import eu.codlab.simplepromise.solve.PromiseSolver;
+import eu.codlab.simplepromise.solve.Solver;
 import eu.codlab.testpromise.utils.AndroidMockUtil;
 
 import static junit.framework.Assert.assertEquals;

@@ -1,4 +1,4 @@
-package eu.codlab.simplepromise;
+package eu.codlab.simplepromise.solve;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
  * Simple solver to give ability to manage resolve/reject a/-synchronously
  */
 public abstract class Solver<TYPE> {
-    Solver() {
+    protected Solver() {
 
     }
 

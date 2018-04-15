@@ -1,4 +1,4 @@
-package eu.codlab.simplepromise;
+package eu.codlab.simplepromise.solve;
 
 import android.support.annotation.NonNull;
 

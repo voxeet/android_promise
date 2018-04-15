@@ -9,8 +9,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import eu.codlab.simplepromise.Promise;
-import eu.codlab.simplepromise.PromiseSolver;
-import eu.codlab.simplepromise.Solver;
+import eu.codlab.simplepromise.solve.PromiseSolver;
+import eu.codlab.simplepromise.solve.Solver;
 import eu.codlab.testpromise.utils.AndroidMockUtil;
 
 public class PromiseTestSimpleResolve {
@@ -31,6 +31,7 @@ public class PromiseTestSimpleResolve {
             public void onCall(@NonNull Solver<String> solver) {
                 catched[0] = false;
                 solver.resolve("called");
+                latch.countDown();
             }
         }).execute();
 

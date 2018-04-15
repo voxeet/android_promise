@@ -3,12 +3,16 @@ package eu.codlab.simplepromise;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import eu.codlab.simplepromise.solve.ErrorPromise;
+import eu.codlab.simplepromise.solve.PromiseExec;
+import eu.codlab.simplepromise.solve.Solver;
+
 /**
  * Promise's logic management
  * Take a type "in" to create a type "out"
  */
 
-public class PromiseInOut<TYPE, TYPE_RESULT> {
+public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT> {
     @Nullable
     private Promise<TYPE_RESULT> mPromise;
 

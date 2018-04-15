@@ -3,7 +3,17 @@ package eu.codlab.simplepromise;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-public class Promise<TYPE> {
+import java.util.List;
+
+import eu.codlab.simplepromise.solve.ErrorPromise;
+import eu.codlab.simplepromise.solve.PromiseExec;
+import eu.codlab.simplepromise.solve.PromiseSolver;
+
+public class Promise<TYPE> extends AbstractPromise<TYPE> {
+
+    public static <T> Promise<List<T>> all(AbstractPromise<T>...promises) {
+        return new PromiseAll<T>(promises).all();
+    }
 
     @NonNull
     private static Handler sHandler = new Handler();
@@ -30,6 +40,7 @@ public class Promise<TYPE> {
         mPromiseInOut = new PromiseInOut<>(this);
     }
 
+    @Override
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(PromiseExec<TYPE, TYPE_RESULT> to_resolve) {
         return then(new PromiseInOut<>(to_resolve));
     }

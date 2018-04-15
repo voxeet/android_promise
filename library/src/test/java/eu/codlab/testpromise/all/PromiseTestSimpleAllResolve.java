@@ -1,4 +1,4 @@
-package eu.codlab.testpromise.errors;
+package eu.codlab.testpromise.all;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,17 +6,19 @@ import android.support.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.Promise;
+import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.PromiseSolver;
 import eu.codlab.simplepromise.solve.Solver;
 import eu.codlab.testpromise.utils.AndroidMockUtil;
 
-public class PromiseTestNPECatch {
+public class PromiseTestSimpleAllResolve {
 
     @Before
     public void setHandler() {
@@ -27,25 +29,25 @@ public class PromiseTestNPECatch {
     public void test() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        final boolean[] catched = {false};
+        final boolean[] catched = {true};
         System.out.println("executing test");
-        new Promise<String>(new PromiseSolver<String>() {
+
+        Promise.all(new Promise<>(new PromiseSolver<String>() {
             @Override
             public void onCall(@NonNull Solver<String> solver) {
-                solver.resolve(null);
+                catched[0] = false;
+                solver.resolve("called 1");
             }
-        })
-                .then(new PromiseExec<String, String>() {
+        }), new Promise<>(new PromiseSolver<String>() {
+            @Override
+            public void onCall(@NonNull Solver<String> solver) {
+                solver.resolve("called 2");
+            }
+        }))
+                .then(new PromiseExec<List<String>, Void>() {
                     @Override
-                    public void onCall(@Nullable String result, @NonNull Solver<String> solver) {
-                        //explode right here
-                        solver.resolve(result.toLowerCase());
-                    }
-                })
-                .then(new PromiseExec<String, Void>() {
-                    @Override
-                    public void onCall(@Nullable String result, @NonNull Solver<Void> solver) {
-                        System.out.println("you should not see this");
+                    public void onCall(@Nullable List<String> result, @NonNull Solver<Void> solver) {
+                        System.out.println(Arrays.toString(result.toArray()));
                         catched[0] = false;
                         latch.countDown();
                     }
@@ -53,17 +55,16 @@ public class PromiseTestNPECatch {
                 .error(new ErrorPromise() {
                     @Override
                     public void onError(@NonNull Throwable error) {
-                        System.out.println("error catched");
-                        catched[0] = true;
                         error.printStackTrace();
+                        catched[0] = true;
                         latch.countDown();
                     }
                 });
 
         //6s are enough
         latch.await(6, TimeUnit.SECONDS);
-        if (!catched[0]) {
-            throw new IllegalStateException("Expected error...");
+        if (catched[0]) {
+            throw new IllegalStateException("Expected 0 error...");
         }
     }
 }
