@@ -1,4 +1,16 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
+}
+
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+
+def VERSION="1.0"
 
 android {
     compileSdkVersion 26
@@ -9,7 +21,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName version
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -34,3 +46,21 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+group = project.properties["PROMISE_MAVEN_PUBLISHED_GROUPID"]
+version = VERSION
+
+bintray {
+    user = project.properties["OSS_CODLAB_DEVELOPER_ID"]
+    key = project.properties["OSS_CODLAB_API_KEY"]
+    configurations = ['archives']
+    pkg {
+        userOrg = project.properties["OSS_CODLAB_ORG"]
+        repo = project.properties["OSS_CODLAB_REPO"]
+        name = "eu.codlab.simplepromise"
+        publicDownloadNumbers = true
+        publish = true
+    }
+}
+
+apply from: "../tasks.gradle"
