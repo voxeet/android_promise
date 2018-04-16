@@ -1,0 +1,29 @@
+language: android
+android:
+  components:
+    - tools
+    - build-tools-26.0.3
+    - android-27
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - mkdir "$ANDROID_HOME/licenses" || true
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+
+script: ./gradlew clean build --info --stacktrace
+
+sudo: false
+
+env:
+  global:
+    - GRADLE_OPTS="-Xms128m"
+
+cache:
+  directories:
+  - $HOME/.gradle
+  - $HOME/.m2
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
