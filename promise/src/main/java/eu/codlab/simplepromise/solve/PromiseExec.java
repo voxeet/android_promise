@@ -12,7 +12,8 @@ public abstract class PromiseExec<TYPE, RESULT> {
     /**
      * Success method, called from Promise's then()
      *
-     * @param result
+     * @param result a valid or nullable result from the previous resolution
+     * @param solver a solver which resolve or reject method must be called
      */
     public abstract void onCall(@Nullable TYPE result, @NonNull Solver<RESULT> solver);
 
