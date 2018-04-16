@@ -2,6 +2,8 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+[![Travis](https://travis-ci.org/codlab/android_promise.svg?branch=master)](https://travis-ci.org/codlab/android_promise)
+
 ## Import
 
 In your build.gradle file, add the following :
