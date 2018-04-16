@@ -12,6 +12,8 @@ public abstract class PromiseSolver<TYPE> {
      * <p>
      * Warning : if your call is async, the final result will
      * be posted into the promise handler's looper
+     *
+     * @param solver a solver which resolve or reject method must be called
      */
     public abstract void onCall(@NonNull Solver<TYPE> solver);
 
