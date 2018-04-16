@@ -1,0 +1,25 @@
+language: android
+android:
+  components:
+    - tools
+    - build-tools-27.0.3
+    - android-27
+
+jdk:
+  - oraclejdk8
+
+script: ./gradlew clean build --info --stacktrace
+
+sudo: false
+
+env:
+  global:
+    - GRADLE_OPTS="-Xms128m"
+
+cache:
+  directories:
+  - $HOME/.gradle
+  - $HOME/.m2
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
