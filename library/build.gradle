@@ -4,13 +4,16 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 def VERSION="1.1"
+def GROUP="eu.codlab.simplepromise"
 
 android {
     compileSdkVersion 26
@@ -36,7 +39,12 @@ android {
 
 }
 
+configurations {
+    javadocDeps
+}
+
 dependencies {
+    javadocDeps 'com.android.support:support-annotations:27.1.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -47,7 +55,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
 
-group = project.properties["PROMISE_MAVEN_PUBLISHED_GROUPID"]
+group = GROUP
 version = VERSION
 
 bintray {
@@ -57,7 +65,7 @@ bintray {
     pkg {
         userOrg = project.properties["OSS_CODLAB_ORG"]
         repo = project.properties["OSS_CODLAB_REPO"]
-        name = "eu.codlab.simplepromise"
+        name = GROUP
         publicDownloadNumbers = true
         publish = true
     }
