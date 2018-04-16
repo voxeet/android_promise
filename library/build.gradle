@@ -13,7 +13,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 def VERSION="1.1"
-def GROUP="eu.codlab.simplepromise"
+def GROUP="eu.codlab"
 
 android {
     compileSdkVersion 26

@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("codlab.eu.simplepromise.test", appContext.getPackageName());
+        assertEquals("eu.codlab.simplepromise.test", appContext.getPackageName());
     }
 }
