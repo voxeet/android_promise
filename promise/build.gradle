@@ -12,7 +12,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def VERSION="1.1"
+def VERSION="1.2"
 def GROUP="eu.codlab"
 
 android {
