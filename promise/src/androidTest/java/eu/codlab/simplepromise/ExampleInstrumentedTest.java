@@ -1,4 +1,4 @@
-package codlab.eu.simplepromise;
+package eu.codlab.simplepromise;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
