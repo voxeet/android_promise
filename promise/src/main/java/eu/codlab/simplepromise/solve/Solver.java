@@ -3,6 +3,8 @@ package eu.codlab.simplepromise.solve;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import eu.codlab.simplepromise.PromiseInOut;
+
 /**
  * Simple solver to give ability to manage resolve/reject a/-synchronously
  */
@@ -17,6 +19,8 @@ public abstract class Solver<TYPE> {
      * @param result a nullable result to propagate
      */
     public abstract void resolve(@Nullable TYPE result);
+
+    public abstract <FIRST> void resolve(@NonNull PromiseInOut<FIRST, TYPE> promise);
 
     /**
      * Reject the current branch

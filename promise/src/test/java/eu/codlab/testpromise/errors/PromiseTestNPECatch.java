@@ -32,7 +32,7 @@ public class PromiseTestNPECatch {
         new Promise<String>(new PromiseSolver<String>() {
             @Override
             public void onCall(@NonNull Solver<String> solver) {
-                solver.resolve(null);
+                solver.resolve((String) null);
             }
         })
                 .then(new PromiseExec<String, String>() {
