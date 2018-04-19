@@ -1,4 +1,4 @@
-package eu.codlab.testpromise.resolve;
+package eu.codlab.testpromise.sub_promise.promise;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,8 +9,9 @@ import org.junit.Test;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.Promise;
+import eu.codlab.simplepromise.PromiseInOut;
+import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.PromiseSolver;
 import eu.codlab.simplepromise.solve.Solver;
@@ -32,30 +33,42 @@ public class PromiseTestWithSumDelayed {
         final CountDownLatch latch = new CountDownLatch(1);
         final int[] final_result = {0};
 
+        final Promise<Integer> resolve_later = new Promise<>(new PromiseSolver<Integer>() {
+            @Override
+            public void onCall(@NonNull final Solver<Integer> solver) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        System.out.println("sleeping...");
+                        try {
+                            sleep(20);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        solver.resolve(10 * 10);
+                    }
+                }.run();
+            }
+        });
+
         System.out.println("executing test");
         execute()
                 .then(new PromiseExec<Integer, Integer>() {
                     @Override
                     public void onCall(@Nullable final Integer result, @NonNull final Solver<Integer> solver) {
-                        new Thread() {
+                        solver.resolve(resolve_later
+                        .then(new PromiseExec<Integer, Integer>() {
                             @Override
-                            public void run() {
-                                System.out.println("sleeping...");
-                                try {
-                                    sleep(200);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                solver.resolve(10 + result);
+                            public void onCall(@Nullable Integer new_result, @NonNull Solver<Integer> solver) {
+                                solver.resolve(new_result + result);
                             }
-                        }.run();
+                        }));
                     }
                 })
-                .then(new PromiseExec<Integer, Integer>() {
+                .then(new PromiseExec<Integer, Object>() {
                     @Override
-                    public void onCall(@Nullable Integer result, @NonNull Solver<Integer> solver) {
-                        final_result[0] = 10 + result;
-                        latch.countDown();
+                    public void onCall(@Nullable Integer result, @NonNull Solver<Object> solver) {
+                        final_result[0] = result;
                     }
                 })
                 .error(new ErrorPromise() {
@@ -70,8 +83,8 @@ public class PromiseTestWithSumDelayed {
 
         //6s are enough
         latch.await(6, TimeUnit.SECONDS);
-        if (final_result[0] != 30) {
-            throw new IllegalStateException("Expected 30... having " + final_result[0]);
+        if (final_result[0] != 110) {
+            throw new IllegalStateException("Expected 110... having " + final_result[0]);
         } else {
             System.out.println("having result " + final_result[0]);
         }

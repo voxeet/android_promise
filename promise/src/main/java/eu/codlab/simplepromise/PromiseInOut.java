@@ -157,6 +157,24 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                             }
 
                             @Override
+                            public void resolve(@NonNull Promise<TYPE_RESULT> promise) {
+                                promise
+                                        .then(new PromiseExec<TYPE_RESULT, Object>() {
+                                            @Override
+                                            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
+                                                resolve(result);
+                                            }
+                                        })
+                                        .error(new ErrorPromise() {
+                                            @Override
+                                            public void onError(@NonNull Throwable error) {
+                                                reject(error);
+                                            }
+                                        });
+
+                            }
+
+                            @Override
                             public void reject(@NonNull Throwable error) {
                                 postAfterOnError(error);
                             }
@@ -183,7 +201,24 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                                         .then(new PromiseExec<TYPE_RESULT, Object>() {
                                             @Override
                                             public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                                postResult(result);
+                                                resolve(result);
+                                            }
+                                        })
+                                        .error(new ErrorPromise() {
+                                            @Override
+                                            public void onError(@NonNull Throwable error) {
+                                                reject(error);
+                                            }
+                                        });
+                            }
+
+                            @Override
+                            public void resolve(@NonNull Promise<TYPE_RESULT> promise) {
+                                promise
+                                        .then(new PromiseExec<TYPE_RESULT, Object>() {
+                                            @Override
+                                            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
+                                                resolve(result);
                                             }
                                         })
                                         .error(new ErrorPromise() {
