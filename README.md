@@ -81,6 +81,20 @@ Once one of those 2 calls are made, the promise will start resolving itself.
 Note that it is the best practice to manage the execution flow using `error(<ErrorPromise>)` to be sure
 to grab any issues the Promise resolution could throw !
 
+those following methods exists to resolve :
+
+- resolve(Promise)
+
+  post a new promise to resolve
+
+- resolve(PromiseInOut)
+
+  post a promise chained to resolve
+
+- resolve(value)
+
+  post a value as a ... result to the next
+
 Example : 
 ```
     new Promise<String>(new PromiseSolver<String>() {
