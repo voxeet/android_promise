@@ -11,7 +11,7 @@ In your build.gradle file, add the following :
 ```
 repositories {
     maven {
-        url  "https://dl.bintray.com/codlab/oss" 
+        url  "https://dl.bintray.com/codlab/oss"
     }
 }
 ```
@@ -95,7 +95,7 @@ those following methods exists to resolve :
 
   post a value as a ... result to the next
 
-Example : 
+Example :
 ```
     new Promise<String>(new PromiseSolver<String>() {
             @Override
@@ -133,4 +133,4 @@ email, or any other method with the owners of this repository before making a ch
 
 ## License
 
-This project is licensed under the GPL v3 License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the LGPL v3 License - see the [LICENSE](LICENSE) file for details
