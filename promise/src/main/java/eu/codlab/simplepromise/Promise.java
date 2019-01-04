@@ -1,13 +1,16 @@
 package eu.codlab.simplepromise;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.PromiseSolver;
+import eu.codlab.simplepromise.solve.Solver;
 
 public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
@@ -16,7 +19,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     }
 
     @NonNull
-    private static Handler sHandler = new Handler();
+    private static Handler sHandler = new Handler(Looper.getMainLooper());
 
     public static void setHandler(@NonNull Handler handler) {
         sHandler = handler;
@@ -44,6 +47,16 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(PromiseExec<TYPE, TYPE_RESULT> to_resolve) {
         return then(new PromiseInOut<>(to_resolve));
     }
+
+    public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(final TYPE_RESULT resolved) {
+        return then(new PromiseExec<TYPE, TYPE_RESULT>() {
+            @Override
+            public void onCall(@Nullable TYPE result, @NonNull Solver<TYPE_RESULT> solver) {
+                solver.resolve(resolved);
+            }
+        });
+    }
+
 
     public <TYPE_RESULT> void error(ErrorPromise to_error) {
         PromiseInOut<TYPE, TYPE_RESULT> promise_inout = new PromiseInOut<>(to_error);
