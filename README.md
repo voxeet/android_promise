@@ -1,6 +1,6 @@
 # Simple Promise for Android
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: Apache 2](https://img.shields.io/badge/License-Apache2-blue.svg)](./LICENSE.md)
 
 [![Travis](https://travis-ci.org/codlab/android_promise.svg?branch=master)](https://travis-ci.org/codlab/android_promise)
 
@@ -133,4 +133,4 @@ email, or any other method with the owners of this repository before making a ch
 
 ## License
 
-This project is licensed under the LGPL v3 License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the Apache 2 License - see the [LICENSE](LICENSE.md) file for details
