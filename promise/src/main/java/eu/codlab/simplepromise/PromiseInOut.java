@@ -2,6 +2,7 @@ package eu.codlab.simplepromise;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
@@ -46,6 +47,11 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
      * Public management
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+    @Override
+    public <TYPE_RESULT1> PromiseInOut<TYPE_RESULT, TYPE_RESULT1> then(Promise<TYPE_RESULT1> to_resolve) {
+        return then(super.then(to_resolve));
+    }
+
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
     then(PromiseExec<TYPE_RESULT, EXPECTED_TYPE> next_simili_promise) {
         return then(new PromiseInOut<>(next_simili_promise));
@@ -59,6 +65,10 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
 
     public void execute() {
         //top -> down
+        PromiseDebug.log("PromiseInOut", "executing promise ----------");
+        PromiseDebug.log("PromiseInOut", "having inout parent := " + mPromiseInOutParent);
+        PromiseDebug.log("PromiseInOut", "having inout parent := " + mPromise);
+        PromiseDebug.log("PromiseInOut", "executing promise ----------");
         if (null != mPromiseInOutParent) {
             mPromiseInOutParent.execute();
         } else if (mPromise != null) {
@@ -135,43 +145,43 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                     try {
                         mSimiliPromise.onCall(mResult, new Solver<TYPE_RESULT>() {
                             @Override
-                            public void resolve(@Nullable TYPE_RESULT result) {
-                                postResult(result);
-                            }
-
-                            @Override
                             public <FIRST> void resolve(@NonNull PromiseInOut<FIRST, TYPE_RESULT> promise) {
-                                promise
-                                        .then(new PromiseExec<TYPE_RESULT, Object>() {
-                                            @Override
-                                            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                                postResult(result);
-                                            }
-                                        })
-                                        .error(new ErrorPromise() {
-                                            @Override
-                                            public void onError(@NonNull Throwable error) {
-                                                reject(error);
-                                            }
-                                        });
+                                promise.then(new PromiseExec<TYPE_RESULT, Object>() {
+                                    @Override
+                                    public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
+                                        postResult(result);
+                                    }
+                                }).error(new ErrorPromise() {
+                                    @Override
+                                    public void onError(@NonNull Throwable error) {
+                                        reject(error);
+                                    }
+                                });
                             }
 
                             @Override
                             public void resolve(@NonNull Promise<TYPE_RESULT> promise) {
-                                promise
-                                        .then(new PromiseExec<TYPE_RESULT, Object>() {
-                                            @Override
-                                            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                                resolve(result);
-                                            }
-                                        })
-                                        .error(new ErrorPromise() {
-                                            @Override
-                                            public void onError(@NonNull Throwable error) {
-                                                reject(error);
-                                            }
-                                        });
+                                promise.then(new PromiseExec<TYPE_RESULT, Object>() {
+                                    @Override
+                                    public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
+                                        resolve(result);
+                                    }
+                                }).error(new ErrorPromise() {
+                                    @Override
+                                    public void onError(@NonNull Throwable error) {
+                                        reject(error);
+                                    }
+                                });
 
+                            }
+
+                            @Override
+                            public void resolve(@Nullable TYPE_RESULT result) {
+                                if(result instanceof Promise) {
+                                    resolve((Promise) result);
+                                } else {
+                                    postResult(result);
+                                }
                             }
 
                             @Override

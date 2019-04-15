@@ -2,13 +2,14 @@ package eu.codlab.simplepromise;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
 
 public abstract class AbstractPromise<TYPE_EXECUTE> {
 
-    protected abstract <TYPE_RESULT> PromiseInOut<TYPE_EXECUTE, TYPE_RESULT>
+    public abstract <TYPE_RESULT> PromiseInOut<TYPE_EXECUTE, TYPE_RESULT>
     then(PromiseExec<TYPE_EXECUTE, TYPE_RESULT> to_resolve);
 
     /**
@@ -21,7 +22,7 @@ public abstract class AbstractPromise<TYPE_EXECUTE> {
      *
      * @return an object resolvable
      */
-    protected <TYPE_RESULT> PromiseInOut<TYPE_EXECUTE, TYPE_RESULT>
+    public <TYPE_RESULT> PromiseInOut<TYPE_EXECUTE, TYPE_RESULT>
     then(final Promise<TYPE_RESULT> to_resolve) {
         return new PromiseInOut<>(new PromiseExec<TYPE_EXECUTE, TYPE_RESULT>() {
             @Override

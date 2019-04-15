@@ -14,7 +14,7 @@ import eu.codlab.simplepromise.solve.Solver;
 
 public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
-    public static <T> Promise<List<T>> all(AbstractPromise<T>...promises) {
+    public static <T> Promise<List<T>> all(AbstractPromise<T>... promises) {
         return new PromiseAll<T>(promises).all();
     }
 
@@ -39,12 +39,14 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
     public Promise(PromiseSolver<TYPE> solver) {
         this();
+        PromiseDebug.activate(true);
         mSolver = solver;
         mPromiseInOut = new PromiseInOut<>(this);
     }
 
     @Override
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(PromiseExec<TYPE, TYPE_RESULT> to_resolve) {
+        PromiseDebug.log("Promise", "then PromiseExec");
         return then(new PromiseInOut<>(to_resolve));
     }
 
@@ -59,6 +61,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
 
     public <TYPE_RESULT> void error(ErrorPromise to_error) {
+        PromiseDebug.log("Promise", "then error");
         PromiseInOut<TYPE, TYPE_RESULT> promise_inout = new PromiseInOut<>(to_error);
         promise_inout.setParent(mPromiseInOut);
         mPromiseInOut.setChild((PromiseInOut<TYPE, Object>) promise_inout);
@@ -67,6 +70,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     }
 
     public void execute() {
+        PromiseDebug.log("Promise", "execute " + mPromiseInOut);
         mPromiseInOut.execute();
     }
 
@@ -75,6 +79,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     void resolve() {
+        PromiseDebug.log("Promise", "resolve " + mPromiseInOut);
         mPromiseInOut.execute(this);
     }
 
@@ -86,7 +91,13 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
      * Private management
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+    @Override
+    public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(Promise<TYPE_RESULT> to_resolve) {
+        return then(super.then(to_resolve));
+    }
+
     private <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(PromiseInOut<TYPE, TYPE_RESULT> created_inout) {
+        PromiseDebug.log("Promise", "then PromiseInOut " + created_inout);
         created_inout.setParent(mPromiseInOut);
         mPromiseInOut.setChild((PromiseInOut<TYPE, Object>) created_inout);
 

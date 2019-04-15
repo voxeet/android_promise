@@ -62,6 +62,39 @@ public class PromiseTestWithSum {
         }
     }
 
+
+    @Test
+    public void testSoloResolve() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        final int[] final_result = {0};
+
+        System.out.println("executing test");
+        execute().then(new PromiseExec<Integer, Integer>() {
+            @Override
+            public void onCall(@Nullable Integer result, @NonNull Solver<Integer> solver) {
+                System.out.println("---------");
+                final_result[0] = 10 + result;
+                latch.countDown();
+            }
+        }).error(new ErrorPromise() {
+            @Override
+            public void onError(@NonNull Throwable error) {
+                System.out.println("error catched");
+                final_result[0] = 0;
+                error.printStackTrace();
+                latch.countDown();
+            }
+        });
+
+        //6s are enough
+        latch.await(6, TimeUnit.SECONDS);
+        if (final_result[0] != 20) {
+            throw new IllegalStateException("Expected 20... having " + final_result[0]);
+        } else {
+            System.out.println("having result " + final_result[0]);
+        }
+    }
+
     private Promise<Integer> execute() {
         return new Promise<>(new PromiseSolver<Integer>() {
             @Override
