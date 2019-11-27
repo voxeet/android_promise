@@ -9,10 +9,8 @@
 In your build.gradle file, add the following :
 
 ```
-repositories {
-    maven {
-        url  "https://dl.bintray.com/codlab/oss"
-    }
+dependencies {
+    implementation "eu.codlab:promise:1.7.2"
 }
 ```
 

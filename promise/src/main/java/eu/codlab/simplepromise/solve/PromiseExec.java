@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
  * Simple interface which will give success and error methods
  */
 
-public abstract class PromiseExec<TYPE, RESULT> {
+public interface PromiseExec<TYPE, RESULT> {
 
     /**
      * Success method, called from Promise's then()
@@ -15,6 +15,6 @@ public abstract class PromiseExec<TYPE, RESULT> {
      * @param result a valid or nullable result from the previous resolution
      * @param solver a solver which resolve or reject method must be called
      */
-    public abstract void onCall(@Nullable TYPE result, @NonNull Solver<RESULT> solver);
+    void onCall(@Nullable TYPE result, @NonNull Solver<RESULT> solver);
 
 }

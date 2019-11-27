@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
  * Class used as a main entry point for the Promise
  */
 
-public abstract class PromiseSolver<TYPE> {
+public interface PromiseSolver<TYPE> {
     /**
      * Call resolve or reject in this method implementation
      * <p>
@@ -15,6 +15,6 @@ public abstract class PromiseSolver<TYPE> {
      *
      * @param solver a solver which resolve or reject method must be called
      */
-    public abstract void onCall(@NonNull Solver<TYPE> solver);
+    void onCall(@NonNull Solver<TYPE> solver);
 
 }

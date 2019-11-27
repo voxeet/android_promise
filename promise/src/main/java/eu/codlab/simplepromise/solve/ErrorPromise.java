@@ -3,12 +3,12 @@ package eu.codlab.simplepromise.solve;
 
 import android.support.annotation.NonNull;
 
-public abstract class ErrorPromise {
+public interface ErrorPromise {
 
     /**
      * Manage the error propagated from the promise
      *
      * @param error a non null error
      */
-    public abstract void onError(@NonNull Throwable error);
+    void onError(@NonNull Throwable error);
 }
