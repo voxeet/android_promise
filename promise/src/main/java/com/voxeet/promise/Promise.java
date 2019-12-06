@@ -57,7 +57,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         mPromiseInOut = new PromiseInOut<>(this);
     }
 
-    private Promise(TYPE value) {
+    private Promise(final TYPE value) {
         this(new PromiseSolver<TYPE>() {
             @Override
             public void onCall(@NonNull Solver<TYPE> solver) {
@@ -73,7 +73,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     public static <TYPE> Promise<TYPE> reject(@NonNull Exception to_throw) {
         try {
             throw to_throw;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return new Promise<>(new PromiseSolver<TYPE>() {
                 @Override
                 public void onCall(@NonNull Solver<TYPE> solver) {
@@ -135,7 +135,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     then(final ThenCallable<TYPE, TYPE_RESULT> likeCallable) {
         return then(new PromiseExec<TYPE, TYPE_RESULT>() {
             @Override
-            public void onCall(@Nullable TYPE result, @NonNull Solver<TYPE_RESULT> solver) {
+            public void onCall(@Nullable final TYPE result, @NonNull final Solver<TYPE_RESULT> solver) {
                 try {
                     if (null != sExecutorService) {
                         sExecutorService.execute(new Runnable() {
