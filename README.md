@@ -1,8 +1,8 @@
-# Simple Promise for Android
+# Promise for Android
 
 [![License: Apache 2](https://img.shields.io/badge/License-Apache2-blue.svg)](./LICENSE.md)
 
-[![Travis](https://travis-ci.org/codlab/android_promise.svg?branch=master)](https://travis-ci.org/codlab/android_promise)
+[![Travis](https://travis-ci.org/voxeet/sdk-android-lib-promise.svg?branch=master)](https://travis-ci.org/voxeet/sdk-android-lib-promise)
 
 ## Import
 
@@ -10,7 +10,7 @@ In your build.gradle file, add the following :
 
 ```
 dependencies {
-    implementation "eu.codlab:promise:1.7.2"
+    implementation "com.voxeet:promise:2.0"
 }
 ```
 

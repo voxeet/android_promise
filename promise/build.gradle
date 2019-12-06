@@ -12,8 +12,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def VERSION="1.8"
-def GROUP="eu.codlab"
+def VERSION="2.0"
+def GROUP="com.voxeet"
 
 android {
     compileSdkVersion 26
@@ -51,8 +51,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.23.0'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -62,12 +62,12 @@ group = GROUP
 version = VERSION
 
 bintray {
-    user = project.properties["OSS_CODLAB_DEVELOPER_ID"]
-    key = project.properties["OSS_CODLAB_API_KEY"]
+    user = project.properties["VOXEET_DEVELOPER_ID"]
+    key = project.properties["BINTRAY_API_KEY"]
     configurations = ['archives']
     pkg {
-        userOrg = project.properties["OSS_CODLAB_ORG"]
-        repo = project.properties["OSS_CODLAB_REPO"]
+        userOrg = project.properties["VOXEET_MAIN_DEVELOPER_ID"]
+        repo = project.properties["VOXEET_SDK_BINTRAY_REPO"]
         name = GROUP
         publicDownloadNumbers = true
         publish = true
