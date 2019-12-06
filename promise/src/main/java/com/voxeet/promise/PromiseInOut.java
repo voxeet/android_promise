@@ -6,6 +6,10 @@ import android.support.annotation.Nullable;
 import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.PromiseExec;
 import com.voxeet.promise.solve.Solver;
+import com.voxeet.promise.solve.ThenCallable;
+import com.voxeet.promise.solve.ThenPromise;
+import com.voxeet.promise.solve.ThenValue;
+import com.voxeet.promise.solve.ThenVoid;
 
 /**
  * Promise's logic management
@@ -54,6 +58,62 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
     then(PromiseExec<TYPE_RESULT, EXPECTED_TYPE> next_simili_promise) {
         return then(new PromiseInOut<>(next_simili_promise));
+    }
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * BLOCK OF js like
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
+    then(final ThenValue<TYPE_RESULT, EXPECTED_TYPE> likeValue) {
+        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
+            @Override
+            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
+                solver.resolve(likeValue.call(result));
+            }
+        });
+    }
+
+    public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
+    then(final ThenPromise<TYPE_RESULT, EXPECTED_TYPE> likePromise) {
+        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
+            @Override
+            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
+                try {
+                    solver.resolve(likePromise.call(result));
+                } catch (Exception e) {
+                    solver.reject(e);
+                }
+            }
+        });
+    }
+
+    public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
+    then(final ThenCallable<TYPE_RESULT, EXPECTED_TYPE> likeCallable) {
+        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
+            @Override
+            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
+                try {
+                    solver.resolve(likeCallable.call(result).call());
+                } catch (Exception e) {
+                    solver.reject(e);
+                }
+            }
+        });
+    }
+
+    public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
+    then(final ThenVoid<TYPE_RESULT> likeCallable) {
+        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
+            @Override
+            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
+                try {
+                    likeCallable.call(result);
+                } catch (Exception e) {
+                    solver.reject(e);
+                }
+            }
+        });
     }
 
     public void error(ErrorPromise error) {
@@ -176,7 +236,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
 
                             @Override
                             public void resolve(@Nullable TYPE_RESULT result) {
-                                if(result instanceof Promise) {
+                                if (result instanceof Promise) {
                                     resolve((Promise) result);
                                 } else {
                                     postResult(result);
