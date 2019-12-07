@@ -5,10 +5,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.PromiseExec;
 import com.voxeet.promise.solve.PromiseSolver;
@@ -17,6 +13,9 @@ import com.voxeet.promise.solve.ThenCallable;
 import com.voxeet.promise.solve.ThenPromise;
 import com.voxeet.promise.solve.ThenValue;
 import com.voxeet.promise.solve.ThenVoid;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
@@ -77,9 +76,17 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
             return new Promise<>(new PromiseSolver<TYPE>() {
                 @Override
                 public void onCall(@NonNull Solver<TYPE> solver) {
-                    solver.reject(e);
+                    Promise.reject(solver, to_throw);
                 }
             });
+        }
+    }
+
+    public static void reject(@NonNull Solver solver, @NonNull Exception to_throw) {
+        try {
+            throw to_throw;
+        } catch (final Exception e) {
+            solver.reject(e);
         }
     }
 
