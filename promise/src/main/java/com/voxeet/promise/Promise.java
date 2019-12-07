@@ -69,23 +69,23 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         return new Promise<>(value);
     }
 
-    public static <TYPE> Promise<TYPE> reject(@NonNull Exception to_throw) {
+    public static <TYPE> Promise<TYPE> reject(@NonNull Throwable to_throw) {
         try {
             throw to_throw;
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             return new Promise<>(new PromiseSolver<TYPE>() {
                 @Override
                 public void onCall(@NonNull Solver<TYPE> solver) {
-                    Promise.reject(solver, to_throw);
+                    solver.reject(e);
                 }
             });
         }
     }
 
-    public static void reject(@NonNull Solver solver, @NonNull Exception to_throw) {
+    public static void reject(@NonNull Solver solver, @NonNull Throwable to_throw) {
         try {
             throw to_throw;
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             solver.reject(e);
         }
     }
