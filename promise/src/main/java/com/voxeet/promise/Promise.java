@@ -8,11 +8,14 @@ import android.support.annotation.Nullable;
 import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.PromiseExec;
 import com.voxeet.promise.solve.PromiseSolver;
+import com.voxeet.promise.solve.ResolveReject;
 import com.voxeet.promise.solve.Solver;
 import com.voxeet.promise.solve.ThenCallable;
 import com.voxeet.promise.solve.ThenPromise;
 import com.voxeet.promise.solve.ThenValue;
 import com.voxeet.promise.solve.ThenVoid;
+import com.voxeet.promise.solve.params.Reject;
+import com.voxeet.promise.solve.params.Resolve;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -53,6 +56,14 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         this();
         PromiseDebug.activate(true);
         mSolver = solver;
+        mPromiseInOut = new PromiseInOut<>(this);
+    }
+
+    public Promise(@NonNull ResolveReject<TYPE> resolveReject) {
+        this();
+        PromiseDebug.activate(true);
+        mSolver = solver -> resolveReject.onCall(new Resolve<TYPE>(solver),
+                new Reject(solver));
         mPromiseInOut = new PromiseInOut<>(this);
     }
 
