@@ -54,14 +54,12 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
     public Promise(PromiseSolver<TYPE> solver) {
         this();
-        PromiseDebug.activate(true);
         mSolver = solver;
         mPromiseInOut = new PromiseInOut<>(this);
     }
 
     public Promise(@NonNull ResolveReject<TYPE> resolveReject) {
         this();
-        PromiseDebug.activate(true);
         mSolver = solver -> resolveReject.onCall(new Resolve<TYPE>(solver),
                 new Reject(solver));
         mPromiseInOut = new PromiseInOut<>(this);
