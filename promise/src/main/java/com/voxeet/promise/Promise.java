@@ -9,6 +9,8 @@ import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.PromiseExec;
 import com.voxeet.promise.solve.PromiseSolver;
 import com.voxeet.promise.solve.ResolveReject;
+import com.voxeet.promise.solve.SolvePromise;
+import com.voxeet.promise.solve.SolveValue;
 import com.voxeet.promise.solve.Solver;
 import com.voxeet.promise.solve.ThenCallable;
 import com.voxeet.promise.solve.ThenPromise;
@@ -61,6 +63,14 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         this();
         mSolver = solver;
         mPromiseInOut = new PromiseInOut<>(this);
+    }
+
+    public Promise(SolvePromise<TYPE> value) {
+        this(solver -> solver.resolve(value.onCall()));
+    }
+
+    public Promise(SolveValue<TYPE> value) {
+        this(solver -> solver.resolve(value.onCall()));
     }
 
     public Promise(@NonNull ResolveReject<TYPE> resolveReject) {
