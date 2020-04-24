@@ -30,6 +30,11 @@ class PromiseAll<TYPE_EXECUTE> extends AbstractPromiseMulti<TYPE_EXECUTE> {
         super(promises);
     }
 
+
+    public PromiseAll(List<AbstractPromise<TYPE_EXECUTE>> promises) {
+        super(promises);
+    }
+
     public Promise<List<TYPE_EXECUTE>> all() {
         return new Promise<>(new PromiseSolver<List<TYPE_EXECUTE>>() {
             @Override

@@ -16,13 +16,21 @@ abstract class AbstractPromiseMulti<TYPE_EXECUTE> {
         mPromises = new ArrayList<>();
     }
 
-    protected AbstractPromiseMulti(AbstractPromise<TYPE_EXECUTE> ...promises) {
+    protected AbstractPromiseMulti(AbstractPromise<TYPE_EXECUTE>... promises) {
         this();
 
         if (null != promises) {
             for (AbstractPromise<TYPE_EXECUTE> promise : promises) {
                 mPromises.add(promise);
             }
+        }
+    }
+
+    protected AbstractPromiseMulti(List<AbstractPromise<TYPE_EXECUTE>> promises) {
+        this();
+
+        if (null != promises) {
+            mPromises.addAll(promises);
         }
     }
 

@@ -12,7 +12,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def VERSION="2.5"
+def VERSION="2.6.1"
 def GROUP="com.voxeet.sdk"
 
 android {

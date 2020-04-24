@@ -17,6 +17,7 @@ import com.voxeet.promise.solve.ThenVoid;
 import com.voxeet.promise.solve.params.Reject;
 import com.voxeet.promise.solve.params.Resolve;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -26,6 +27,10 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     private static ExecutorService sExecutorService;
 
     public static <T> Promise<List<T>> all(AbstractPromise<T>... promises) {
+        return new PromiseAll<T>(promises).all();
+    }
+
+    public static <T> Promise<List<T>> all(List<AbstractPromise<T>> promises) {
         return new PromiseAll<T>(promises).all();
     }
 
