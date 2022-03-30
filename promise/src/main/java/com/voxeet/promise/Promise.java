@@ -19,7 +19,6 @@ import com.voxeet.promise.solve.ThenVoid;
 import com.voxeet.promise.solve.params.Reject;
 import com.voxeet.promise.solve.params.Resolve;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -69,10 +68,6 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         this(solver -> solver.resolve(value.onCall()));
     }
 
-    public Promise(SolveValue<TYPE> value) {
-        this(solver -> solver.resolve(value.onCall()));
-    }
-
     public Promise(@NonNull ResolveReject<TYPE> resolveReject) {
         this();
         mSolver = solver -> resolveReject.onCall(new Resolve<TYPE>(solver),
@@ -80,13 +75,13 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         mPromiseInOut = new PromiseInOut<>(this);
     }
 
+    public <TYPE_IN> Promise(@NonNull PromiseInOut<TYPE_IN, TYPE> toResolve) {
+        this(solver -> toResolve.then((ThenVoid<TYPE>) solver::resolve)
+                .error(solver::reject));
+    }
+
     private Promise(final TYPE value) {
-        this(new PromiseSolver<TYPE>() {
-            @Override
-            public void onCall(@NonNull Solver<TYPE> solver) {
-                solver.resolve(value);
-            }
-        });
+        this(solver -> solver.resolve(value));
     }
 
     public static <TYPE> Promise<TYPE> resolve(TYPE value) {
@@ -97,12 +92,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         try {
             throw to_throw;
         } catch (final Throwable e) {
-            return new Promise<>(new PromiseSolver<TYPE>() {
-                @Override
-                public void onCall(@NonNull Solver<TYPE> solver) {
-                    solver.reject(e);
-                }
-            });
+            return new Promise<>(solver -> solver.reject(e));
         }
     }
 
@@ -121,12 +111,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     }
 
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(final TYPE_RESULT resolved) {
-        return then(new PromiseExec<TYPE, TYPE_RESULT>() {
-            @Override
-            public void onCall(@Nullable TYPE result, @NonNull Solver<TYPE_RESULT> solver) {
-                solver.resolve(resolved);
-            }
-        });
+        return then((result, solver) -> solver.resolve(resolved));
     }
 
     @Override
@@ -140,66 +125,49 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT>
     then(final ThenValue<TYPE, TYPE_RESULT> likeValue) {
-        return then(new PromiseExec<TYPE, TYPE_RESULT>() {
-            @Override
-            public void onCall(@Nullable TYPE result, @NonNull Solver<TYPE_RESULT> solver) {
-                solver.resolve(likeValue.call(result));
-            }
-        });
+        return then((result, solver) -> solver.resolve(likeValue.call(result)));
     }
 
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT>
     then(final ThenPromise<TYPE, TYPE_RESULT> likePromise) {
-        return then(new PromiseExec<TYPE, TYPE_RESULT>() {
-            @Override
-            public void onCall(@Nullable TYPE result, @NonNull Solver<TYPE_RESULT> solver) {
-                try {
-                    solver.resolve(likePromise.call(result));
-                } catch (Exception e) {
-                    solver.reject(e);
-                }
+        return then((result, solver) -> {
+            try {
+                solver.resolve(likePromise.call(result));
+            } catch (Exception e) {
+                solver.reject(e);
             }
         });
     }
 
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT>
     then(final ThenCallable<TYPE, TYPE_RESULT> likeCallable) {
-        return then(new PromiseExec<TYPE, TYPE_RESULT>() {
-            @Override
-            public void onCall(@Nullable final TYPE result, @NonNull final Solver<TYPE_RESULT> solver) {
-                try {
-                    if (null != sExecutorService) {
-                        sExecutorService.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    solver.resolve(likeCallable.call(result).call());
-                                } catch (Exception e) {
-                                    solver.reject(e);
-                                }
-                            }
-                        });
-                    } else {
-                        throw new IllegalStateException("No Executor service, please use Promise.setExecutorService(...)");
-                    }
-                } catch (Exception e) {
-                    solver.reject(e);
+        return then((result, solver) -> {
+            try {
+                if (null != sExecutorService) {
+                    sExecutorService.execute(() -> {
+                        try {
+                            solver.resolve(likeCallable.call(result).call());
+                        } catch (Exception e) {
+                            solver.reject(e);
+                        }
+                    });
+                } else {
+                    throw new IllegalStateException("No Executor service, please use Promise.setExecutorService(...)");
                 }
+            } catch (Exception e) {
+                solver.reject(e);
             }
         });
     }
 
     public PromiseInOut<TYPE, Void>
     then(final ThenVoid<TYPE> likeCallable) {
-        return then(new PromiseExec<TYPE, Void>() {
-            @Override
-            public void onCall(@Nullable TYPE result, @NonNull Solver<Void> solver) {
-                try {
-                    likeCallable.call(result);
-                    solver.resolve((Void) null);
-                } catch (Exception e) {
-                    solver.reject(e);
-                }
+        return then((result, solver) -> {
+            try {
+                likeCallable.call(result);
+                solver.resolve((Void) null);
+            } catch (Exception e) {
+                solver.reject(e);
             }
         });
     }

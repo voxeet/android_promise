@@ -1,21 +1,14 @@
 package com.voxeet.testpromise.resolve;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.voxeet.promise.Promise;
+import com.voxeet.promise.solve.PromiseExec;
+import com.voxeet.testpromise.utils.AndroidMockUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import com.voxeet.promise.Promise;
-import com.voxeet.promise.solve.PromiseExec;
-import com.voxeet.promise.solve.PromiseSolver;
-import com.voxeet.promise.solve.Solver;
-import com.voxeet.testpromise.utils.AndroidMockUtil;
-
-import static junit.framework.Assert.assertEquals;
 
 public class PromiseWithStringLowerOnlyVoyels {
 
@@ -29,35 +22,16 @@ public class PromiseWithStringLowerOnlyVoyels {
         final CountDownLatch latch = new CountDownLatch(1);
         final boolean[] equals = {false};
 
-        new Promise<String>(new PromiseSolver<String>() {
-            @Override
-            public void onCall(@NonNull Solver<String> solver) {
-                solver.resolve("TintInTotoTutu");
-            }
-        })
-                .then(new PromiseExec<String, String>() {
-                    @Override
-                    public void onCall(@Nullable String result, @NonNull Solver<String> solver) {
-                        solver.resolve(result.toLowerCase());
-                    }
-                })
-                .then(new PromiseExec<String, String>() {
-                    @Override
-                    public void onCall(@Nullable String result, @NonNull Solver<String> solver) {
-                        solver.resolve(result.replaceAll("[^aeiouy]", ""));
-                    }
-                })
-                .then(new PromiseExec<String, Void>() {
-                    @Override
-                    public void onCall(@Nullable String result, @NonNull Solver<Void> solver) {
-                        System.out.println("result " + result);
+        new Promise<String>(solver -> solver.resolve("TintInTotoTutu"))
+                .then((PromiseExec<String, String>) (result, solver) -> solver.resolve(result.toLowerCase()))
+                .then((PromiseExec<String, String>) (result, solver) -> solver.resolve(result.replaceAll("[^aeiouy]", "")))
+                .then(result -> {
+                    System.out.println("result " + result);
 
-                        equals[0] = "iioouu".equals(result);
-                        latch.countDown();
-                    }
+                    equals[0] = "iioouu".equals(result);
+                    latch.countDown();
                 })
                 .execute();
-
 
 
         //6s are enough

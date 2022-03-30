@@ -2,7 +2,7 @@ package com.voxeet.promise.solve;
 
 import android.support.annotation.NonNull;
 
-import eu.codlab.simplepromise.Promise;
+import com.voxeet.promise.Promise;
 
 /**
  * Class used as a main entry point for the Promise

@@ -66,52 +66,38 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
 
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
     then(final ThenValue<TYPE_RESULT, EXPECTED_TYPE> likeValue) {
-        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
-            @Override
-            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
-                solver.resolve(likeValue.call(result));
-            }
-        });
+        return then((result, solver) -> solver.resolve(likeValue.call(result)));
     }
 
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
     then(final ThenPromise<TYPE_RESULT, EXPECTED_TYPE> likePromise) {
-        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
-            @Override
-            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
-                try {
-                    solver.resolve(likePromise.call(result));
-                } catch (Exception e) {
-                    solver.reject(e);
-                }
+        return then((result, solver) -> {
+            try {
+                solver.resolve(likePromise.call(result));
+            } catch (Exception e) {
+                solver.reject(e);
             }
         });
     }
 
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
     then(final ThenCallable<TYPE_RESULT, EXPECTED_TYPE> likeCallable) {
-        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
-            @Override
-            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
-                try {
-                    solver.resolve(likeCallable.call(result).call());
-                } catch (Exception e) {
-                    solver.reject(e);
-                }
+        return then((result, solver) -> {
+            try {
+                solver.resolve(likeCallable.call(result).call());
+            } catch (Exception e) {
+                solver.reject(e);
             }
         });
     }
 
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
     then(final ThenVoid<TYPE_RESULT> likeCallable) {
-        return then(new PromiseExec<TYPE_RESULT, EXPECTED_TYPE>() {
-            @Override
-            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<EXPECTED_TYPE> solver) {
-                try {
-                    likeCallable.call(result);
-                } catch (Exception e) {
-                    solver.reject(e);
-                }
+        return then((result, solver) -> {
+            try {
+                likeCallable.call(result);
+            } catch (Exception e) {
+                solver.reject(e);
             }
         });
     }
@@ -154,12 +140,9 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     }
 
     void execute(final Promise promise) {
-        Promise.getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (promise == mPromise) {
-                    postAfterOnResult();
-                }
+        Promise.getHandler().post(() -> {
+            if (promise == mPromise) {
+                postAfterOnResult();
             }
         });
     }
@@ -187,12 +170,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
         if (mSimiliError != null) {
             mSimiliError.onError(error);
         } else if (mPromiseInOutChild != null) {
-            Promise.getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    mPromiseInOutChild.postAfterOnError(error);
-                }
-            });
+            Promise.getHandler().post(() -> mPromiseInOutChild.postAfterOnError(error));
         }
     }
 
@@ -202,35 +180,15 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                 @Override
                 public void run() {
                     try {
-                        mSimiliPromise.onCall(mResult, new Solver<TYPE_RESULT>() {
+                        mSimiliPromise.onCall(mResult, new Solver<>() {
                             @Override
                             public <FIRST> void resolve(@NonNull PromiseInOut<FIRST, TYPE_RESULT> promise) {
-                                promise.then(new PromiseExec<TYPE_RESULT, Object>() {
-                                    @Override
-                                    public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                        postResult(result);
-                                    }
-                                }).error(new ErrorPromise() {
-                                    @Override
-                                    public void onError(@NonNull Throwable error) {
-                                        reject(error);
-                                    }
-                                });
+                                promise.then((result, solver) -> postResult(result)).error(this::reject);
                             }
 
                             @Override
                             public void resolve(@NonNull Promise<TYPE_RESULT> promise) {
-                                promise.then(new PromiseExec<TYPE_RESULT, Object>() {
-                                    @Override
-                                    public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                        resolve(result);
-                                    }
-                                }).error(new ErrorPromise() {
-                                    @Override
-                                    public void onError(@NonNull Throwable error) {
-                                        reject(error);
-                                    }
-                                });
+                                promise.then((result, solver) -> resolve(result)).error(this::reject);
 
                             }
 
@@ -258,7 +216,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                 @Override
                 public void run() {
                     try {
-                        mPromise.getSolver().onCall(new Solver<TYPE_RESULT>() {
+                        mPromise.getSolver().onCall(new Solver<>() {
                             @Override
                             public void resolve(@Nullable TYPE_RESULT result) {
                                 postResult(result);
@@ -266,36 +224,12 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
 
                             @Override
                             public <FIRST> void resolve(@NonNull PromiseInOut<FIRST, TYPE_RESULT> promise) {
-                                promise
-                                        .then(new PromiseExec<TYPE_RESULT, Object>() {
-                                            @Override
-                                            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                                resolve(result);
-                                            }
-                                        })
-                                        .error(new ErrorPromise() {
-                                            @Override
-                                            public void onError(@NonNull Throwable error) {
-                                                reject(error);
-                                            }
-                                        });
+                                promise.then((result, solver) -> resolve(result)).error(this::reject);
                             }
 
                             @Override
                             public void resolve(@NonNull Promise<TYPE_RESULT> promise) {
-                                promise
-                                        .then(new PromiseExec<TYPE_RESULT, Object>() {
-                                            @Override
-                                            public void onCall(@Nullable TYPE_RESULT result, @NonNull Solver<Object> solver) {
-                                                resolve(result);
-                                            }
-                                        })
-                                        .error(new ErrorPromise() {
-                                            @Override
-                                            public void onError(@NonNull Throwable error) {
-                                                reject(error);
-                                            }
-                                        });
+                                promise.then((result, solver) -> resolve(result)).error(this::reject);
                             }
 
                             @Override
@@ -312,12 +246,9 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     }
 
     private void postResult(final TYPE_RESULT result) {
-        Promise.getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mPromiseInOutChild != null)
-                    mPromiseInOutChild.setResult(result);
-            }
+        Promise.getHandler().post(() -> {
+            if (mPromiseInOutChild != null)
+                mPromiseInOutChild.setResult(result);
         });
     }
 

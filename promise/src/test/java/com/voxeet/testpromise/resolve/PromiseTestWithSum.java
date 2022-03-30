@@ -1,20 +1,14 @@
 package com.voxeet.testpromise.resolve;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.voxeet.promise.Promise;
+import com.voxeet.promise.solve.PromiseExec;
+import com.voxeet.testpromise.utils.AndroidMockUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import com.voxeet.promise.solve.ErrorPromise;
-import com.voxeet.promise.Promise;
-import com.voxeet.promise.solve.PromiseExec;
-import com.voxeet.promise.solve.PromiseSolver;
-import com.voxeet.promise.solve.Solver;
-import com.voxeet.testpromise.utils.AndroidMockUtil;
 
 public class PromiseTestWithSum {
 
@@ -30,27 +24,16 @@ public class PromiseTestWithSum {
 
         System.out.println("executing test");
         execute()
-                .then(new PromiseExec<Integer, Integer>() {
-                    @Override
-                    public void onCall(@Nullable Integer result, @NonNull Solver<Integer> solver) {
-                        solver.resolve(10 + result);
-                    }
+                .then((PromiseExec<Integer, Integer>) (result, solver) -> solver.resolve(10 + result))
+                .then((PromiseExec<Integer, Integer>) (result, solver) -> {
+                    final_result[0] = 10 + result;
+                    latch.countDown();
                 })
-                .then(new PromiseExec<Integer, Integer>() {
-                    @Override
-                    public void onCall(@Nullable Integer result, @NonNull Solver<Integer> solver) {
-                        final_result[0] = 10 + result;
-                        latch.countDown();
-                    }
-                })
-                .error(new ErrorPromise() {
-                    @Override
-                    public void onError(@NonNull Throwable error) {
-                        System.out.println("error catched");
-                        final_result[0] = 0;
-                        error.printStackTrace();
-                        latch.countDown();
-                    }
+                .error(error -> {
+                    System.out.println("error catched");
+                    final_result[0] = 0;
+                    error.printStackTrace();
+                    latch.countDown();
                 });
 
         //6s are enough
@@ -69,21 +52,15 @@ public class PromiseTestWithSum {
         final int[] final_result = {0};
 
         System.out.println("executing test");
-        execute().then(new PromiseExec<Integer, Integer>() {
-            @Override
-            public void onCall(@Nullable Integer result, @NonNull Solver<Integer> solver) {
-                System.out.println("---------");
-                final_result[0] = 10 + result;
-                latch.countDown();
-            }
-        }).error(new ErrorPromise() {
-            @Override
-            public void onError(@NonNull Throwable error) {
-                System.out.println("error catched");
-                final_result[0] = 0;
-                error.printStackTrace();
-                latch.countDown();
-            }
+        execute().then((PromiseExec<Integer, Integer>) (result, solver) -> {
+            System.out.println("---------");
+            final_result[0] = 10 + result;
+            latch.countDown();
+        }).error(error -> {
+            System.out.println("error catched");
+            final_result[0] = 0;
+            error.printStackTrace();
+            latch.countDown();
         });
 
         //6s are enough
@@ -96,11 +73,6 @@ public class PromiseTestWithSum {
     }
 
     private Promise<Integer> execute() {
-        return new Promise<>(new PromiseSolver<Integer>() {
-            @Override
-            public void onCall(@NonNull Solver<Integer> solver) {
-                solver.resolve(10);
-            }
-        });
+        return new Promise<>(solver -> solver.resolve(10));
     }
 }
