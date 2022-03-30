@@ -1,50 +1,52 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-    }
+plugins {
+    id "com.android.library"
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-
-def VERSION="2.7.0"
-def GROUP="com.voxeet.sdk"
-
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion rootProject.ext.projectCompileSdk
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 1
-        versionName version
+        minSdkVersion rootProject.ext.projectMinSdk
+        targetSdkVersion rootProject.ext.projectTargetSdk
+        versionName rootProject.ext.version
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    testOptions {
-        unitTests.returnDefaultValues = true
+        // debug.testCoverageEnabled true // todo uncomment after https://issuetracker.google.com/issues/195860510 goes stable
+        release.minifyEnabled false
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
+    lintOptions {
+        abortOnError true
+        checkDependencies true
+        checkReleaseBuilds false
+        checkAllWarnings false
+        ignoreTestSources true
+        warningsAsErrors true
+        disable = [
+            "GoogleAppIndexingWarning",
+            "GradleDependency",
+            "JavaPluginLanguageLevel",
+            "LockedOrientationActivity",
+            "NewerVersionAvailable",
+            "UnusedIds"
+        ]
+    }
+
+    testOptions {
+        unitTests.all {
+            maxParallelForks = Runtime.runtime.availableProcessors() - 1
+        }
+        unitTests.returnDefaultValues = true
+    }
 }
 
 configurations {
@@ -52,32 +54,14 @@ configurations {
 }
 
 dependencies {
-    javadocDeps 'com.android.support:support-annotations:28.0.0'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation libs.androidx.annotation
 
-    compile "com.android.support:support-annotations:28.0.0"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.23.0'
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation libs.androidx.test.runner
+    androidTestImplementation libs.androidx.espresso.core
 }
 
-group = GROUP
-version = VERSION
-
-bintray {
-    user = project.properties["VOXEET_DEVELOPER_ID"]
-    key = project.properties["BINTRAY_API_KEY"]
-    configurations = ['archives']
-    pkg {
-        userOrg = project.properties["VOXEET_MAIN_DEVELOPER_ID"]
-        repo = project.properties["VOXEET_SDK_BINTRAY_REPO"]
-        name = GROUP
-        publicDownloadNumbers = true
-        publish = true
-    }
-}
-
-apply from: "../tasks.gradle"
+apply from: "../gradle/tasks.gradle"
+apply from: "../gradle/publishing.gradle"

@@ -2,15 +2,15 @@ package com.voxeet.promise;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.PromiseExec;
 import com.voxeet.promise.solve.PromiseSolver;
 import com.voxeet.promise.solve.ResolveReject;
 import com.voxeet.promise.solve.SolvePromise;
-import com.voxeet.promise.solve.SolveValue;
 import com.voxeet.promise.solve.Solver;
 import com.voxeet.promise.solve.ThenCallable;
 import com.voxeet.promise.solve.ThenPromise;

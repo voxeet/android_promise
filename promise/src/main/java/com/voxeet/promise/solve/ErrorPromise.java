@@ -1,7 +1,6 @@
 package com.voxeet.promise.solve;
 
-
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface ErrorPromise {
 

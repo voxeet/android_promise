@@ -1,6 +1,6 @@
 package com.voxeet.promise.solve.params;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.voxeet.promise.solve.Solver;
 

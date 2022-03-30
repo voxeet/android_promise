@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/develop-sdk-android-lib-promise.iml" filepath="$PROJECT_DIR$/develop-sdk-android-lib-promise.iml" group="sdk-android-lib-promise" />
-      <module fileurl="file://$PROJECT_DIR$/promise/promise.iml" filepath="$PROJECT_DIR$/promise/promise.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk-android-lib-promise.iml" filepath="$PROJECT_DIR$/sdk-android-lib-promise.iml" />
-      <module fileurl="file://$PROJECT_DIR$/promise/sdk-android-lib-promise-promise.iml" filepath="$PROJECT_DIR$/promise/sdk-android-lib-promise-promise.iml" group="sdk-android-lib-promise/promise" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdk-android-lib-promise.iml" filepath="$PROJECT_DIR$/.idea/modules/sdk-android-lib-promise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.iml" filepath="$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.iml" />
     </modules>
   </component>
 </project>

@@ -1,8 +1,9 @@
 package com.voxeet.promise;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 public class PromiseDebug {
 

@@ -1,7 +1,7 @@
 package com.voxeet.promise.solve;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Simple interface which will give success and error methods
