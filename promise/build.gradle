@@ -41,6 +41,10 @@ android {
         ]
     }
 
+    dependencies {
+        coreLibraryDesugaring libs.desugarJdkLibs
+    }
+
     testOptions {
         unitTests.all {
             maxParallelForks = Runtime.runtime.availableProcessors() - 1
