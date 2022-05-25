@@ -1,5 +1,5 @@
 ext {
-    version = "2.7.0"
+    version = "2.7.1"
     groupId = "com.voxeet.sdk"
 
     projectVersionCode = 1

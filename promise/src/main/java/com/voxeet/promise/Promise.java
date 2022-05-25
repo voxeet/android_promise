@@ -35,8 +35,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         return new PromiseAll<T>(promises).all();
     }
 
-    @NonNull
-    private static Handler sHandler = new Handler(Looper.getMainLooper());
+    private static Handler sHandler;
 
     public static void setHandler(@NonNull Handler handler) {
         sHandler = handler;
@@ -48,6 +47,9 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
     @NonNull
     public static Handler getHandler() {
+        if (sHandler == null) {
+            sHandler = new Handler(Looper.getMainLooper());
+        }
         return sHandler;
     }
 
