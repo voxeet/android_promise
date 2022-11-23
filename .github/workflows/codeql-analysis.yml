@@ -61,7 +61,7 @@ jobs:
 
     - name: Manual build
       run: |
-      ./gradlew :promise:assembleRelease
+        ./gradlew :promise:assembleRelease
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
