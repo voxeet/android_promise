@@ -27,6 +27,12 @@ plugins {
 apply from: gradle.dolbyio.files.jacocoProject
 apply from: gradle.dolbyio.files.dependencyUpdates
 
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+
 ext {
     groupId = "io.dolby"
 }
