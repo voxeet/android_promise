@@ -73,10 +73,9 @@ jobs:
           echo "${{ steps.version.outputs.promise }}"
 
       - name: Create release
-        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/beta/') }}
         run: |
-          echo "sonatypeUsername=${{ secrets.OSSRH_USERNAME }}" >> gradle.properties
-          echo "sonatypePassword=${{ secrets.OSSRH_PASSWORD }}" >> gradle.properties
+          echo "sonatypeUsername=${{ secrets.OSSRH_USERNAME2 }}" >> gradle.properties
+          echo "sonatypePassword=${{ secrets.OSSRH_PASSWORD2 }}" >> gradle.properties
           export branch="${{ github.ref }}"
           ./gradlew -PSUFFIX=$PROMISE_SUFFIX :promise:assembleRelease
           ./gradlew -PSUFFIX=$PROMISE_SUFFIX publishToSonatype closeAndReleaseStagingRepository

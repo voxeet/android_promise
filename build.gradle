@@ -28,7 +28,7 @@ apply from: gradle.dolbyio.files.jacocoProject
 apply from: gradle.dolbyio.files.dependencyUpdates
 
 ext {
-    groupId = "io.dolby"
+    groupId = "eu.codlab"
 }
 
 group = ext.groupId
@@ -37,8 +37,8 @@ nexusPublishing {
     repositories {
         sonatype {
             // override default urls as default are oss.sonatype.org
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+//            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+//            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
 }
