@@ -1,56 +1,6 @@
 plugins {
     id "com.android.library"
-}
-
-android {
-    compileSdkVersion rootProject.ext.projectCompileSdk
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.projectMinSdk
-        targetSdkVersion rootProject.ext.projectTargetSdk
-        versionName rootProject.ext.version
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        // debug.testCoverageEnabled true // todo uncomment after https://issuetracker.google.com/issues/195860510 goes stable
-        release.minifyEnabled false
-    }
-
-    compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    lintOptions {
-        abortOnError true
-        checkDependencies true
-        checkReleaseBuilds false
-        checkAllWarnings false
-        ignoreTestSources true
-        warningsAsErrors true
-        disable = [
-            "GoogleAppIndexingWarning",
-            "GradleDependency",
-            "JavaPluginLanguageLevel",
-            "LockedOrientationActivity",
-            "NewerVersionAvailable",
-            "UnusedIds"
-        ]
-    }
-
-    dependencies {
-        coreLibraryDesugaring libs.desugarJdkLibs
-    }
-
-    testOptions {
-        unitTests.all {
-            maxParallelForks = Runtime.runtime.availableProcessors() - 1
-        }
-        unitTests.returnDefaultValues = true
-    }
+    id "kotlin-android"
 }
 
 configurations {
@@ -58,14 +8,12 @@ configurations {
 }
 
 dependencies {
-    implementation libs.androidx.annotation
-
-    testImplementation libs.junit
-    testImplementation libs.mockito.core
-
-    androidTestImplementation libs.androidx.test.runner
-    androidTestImplementation libs.androidx.espresso.core
+    implementation dolbyio.androidx.annotation
 }
 
-apply from: "../gradle/tasks.gradle"
-apply from: "../gradle/publishing.gradle"
+apply from: gradle.dolbyio.files.publishing
+apply from: gradle.dolbyio.files.license
+apply from: gradle.dolbyio.files.sonarqube
+apply from: gradle.dolbyio.files.tasks
+apply from: gradle.dolbyio.files.jacoco
+apply from: gradle.dolbyio.files.dokka
