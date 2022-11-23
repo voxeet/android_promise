@@ -29,7 +29,11 @@ apply from: gradle.dolbyio.files.dependencyUpdates
 
 nexusPublishing {
     repositories {
-        sonatype()
+        sonatype {
+            // override default urls as default are oss.sonatype.org
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
     }
 }
 
