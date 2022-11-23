@@ -1,0 +1,38 @@
+name: "Configure"
+description: "Configure the environment for multiple jobs"
+outputs:
+  promise:
+    description: "Promise version available for non-env related"
+    value: ${{ steps.environment.outputs.promise }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check build for beta IN COMPOSITE
+      id: beta_configuration
+      shell: bash
+      if: startsWith(github.ref, 'refs/heads/beta/')
+      run: |
+        echo "building for beta..."
+        export message="${{ github.event.head_commit.message }}"
+        if [[ "$message" =~ (beta\.[[:digit:]]+) ]]; then
+          export PROMISE_SUFFIX="${BASH_REMATCH[1]}"
+          echo "PROMISE_SUFFIX=$PROMISE_SUFFIX" >> $GITHUB_ENV
+        else
+          echo "no beta.X pattern found in the commit generating this pipeline. Please update and retrigger a build"
+          exit 1
+        fi
+        echo "PROMISE_CONFIGURED='true'" >> $GITHUB_ENV
+
+    - name: Configure specific environment information IN COMPOSITE
+      id: environment
+      shell: bash
+      run: |
+        grep "version=" promise.gradle | cut -d'=' -f2 | sed "s/[^[:digit:][:alpha:]\.-]//g"
+        export PROMISE_VERSION=$(grep "version=" promise.gradle | cut -d'=' -f2 | sed "s/[^[:digit:][:alpha:]\.-]//g")
+        # replaces the PROMISE_VERSION with "version-suffix"
+        [ ! -z "$PROMISE_SUFFIX" ] && export PROMISE_VERSION=$PROMISE_VERSION-$PROMISE_SUFFIX
+        echo "will build $PROMISE_VERSION"
+        echo "promise=$PROMISE_VERSION" >> $GITHUB_OUTPUT
+        echo "PROMISE_VERSION=$PROMISE_VERSION" >> $GITHUB_ENV
+        echo "VERSION_CONFIGURED='true'" >> $GITHUB_ENV
