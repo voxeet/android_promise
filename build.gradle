@@ -27,6 +27,12 @@ plugins {
 apply from: gradle.dolbyio.files.jacocoProject
 apply from: gradle.dolbyio.files.dependencyUpdates
 
+ext {
+    groupId = "io.dolby"
+}
+
+groupId = project.ext.groupId
+
 nexusPublishing {
     repositories {
         sonatype {
@@ -35,10 +41,6 @@ nexusPublishing {
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
-}
-
-ext {
-    groupId = "io.dolby"
 }
 
 allprojects {
@@ -94,7 +96,5 @@ subprojects {
         }
     }
 }
-
-groupId = project.ext.groupId
 
 apply from: "./promise.gradle"
