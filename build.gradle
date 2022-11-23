@@ -31,7 +31,7 @@ ext {
     groupId = "io.dolby"
 }
 
-groupId = ext.groupId
+group = ext.groupId
 
 nexusPublishing {
     repositories {
