@@ -13,7 +13,7 @@ buildscript {
         classpath dolbyio.gradle.versions.plugin
         classpath dolbyio.kotlin.gradlePlugin
         classpath dolbyio.license.gradlePlugin
-        classpath dolbyio.sonarcube.gradlePlugin
+        classpath dolbyio.sonarqube.gradlePlugin
         classpath dolbyio.version.catalog.update.plugin
         classpath dolbyio.dokka.gradlePlugin
     }
@@ -24,7 +24,6 @@ plugins {
     alias(dolbyio.plugins.publish.nexus)
 }
 
-apply from: gradle.dolbyio.files.jacocoProject
 apply from: gradle.dolbyio.files.dependencyUpdates
 
 ext {

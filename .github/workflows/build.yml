@@ -37,6 +37,7 @@ jobs:
         id: build
         run: |
           ./gradlew -PSUFFIX=$PROMISE_SUFFIX :promise:assembleRelease :promise:publishToMavenLocal
+          ./gradlew -PSUFFIX=$PROMISE_SUFFIX :promise-ktx:assembleRelease :promise-ktx:publishToMavenLocal
           mkdir -p ./repository
           cp -r ~/.m2/repository/* ./repository
           zip -r repository.zip ./repository
@@ -78,7 +79,7 @@ jobs:
           echo "sonatypeUsername=${{ secrets.OSSRH_USERNAME }}" >> gradle.properties
           echo "sonatypePassword=${{ secrets.OSSRH_PASSWORD }}" >> gradle.properties
           export branch="${{ github.ref }}"
-          ./gradlew -PSUFFIX=$PROMISE_SUFFIX :promise:assembleRelease
+          ./gradlew -PSUFFIX=$PROMISE_SUFFIX :promise:assembleRelease :promise-ktx:assembleRelease
           ./gradlew -PSUFFIX=$PROMISE_SUFFIX publishToSonatype closeAndReleaseStagingRepository
 
       - name: Create Github's beta release

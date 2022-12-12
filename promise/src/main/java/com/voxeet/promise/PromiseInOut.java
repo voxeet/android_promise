@@ -74,7 +74,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
         return then((result, solver) -> {
             try {
                 solver.resolve(likePromise.call(result));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 solver.reject(e);
             }
         });
@@ -85,18 +85,18 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
         return then((result, solver) -> {
             try {
                 solver.resolve(likeCallable.call(result).call());
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 solver.reject(e);
             }
         });
     }
 
-    public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE>
+    public PromiseInOut<TYPE_RESULT, Void>
     then(final ThenVoid<TYPE_RESULT> likeCallable) {
         return then((result, solver) -> {
             try {
                 likeCallable.call(result);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 solver.reject(e);
             }
         });
@@ -206,7 +206,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                                 postAfterOnError(error);
                             }
                         });
-                    } catch (Exception error) {
+                    } catch (Throwable error) {
                         postAfterOnError(error);
                     }
                 }
@@ -237,7 +237,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                                 postAfterOnError(error);
                             }
                         });
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         postAfterOnError(e);
                     }
                 }

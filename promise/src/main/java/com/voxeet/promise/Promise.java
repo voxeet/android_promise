@@ -135,7 +135,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         return then((result, solver) -> {
             try {
                 solver.resolve(likePromise.call(result));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 solver.reject(e);
             }
         });
@@ -149,14 +149,14 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
                     sExecutorService.execute(() -> {
                         try {
                             solver.resolve(likeCallable.call(result).call());
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             solver.reject(e);
                         }
                     });
                 } else {
                     throw new IllegalStateException("No Executor service, please use Promise.setExecutorService(...)");
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 solver.reject(e);
             }
         });
@@ -168,7 +168,7 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
             try {
                 likeCallable.call(result);
                 solver.resolve((Void) null);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 solver.reject(e);
             }
         });

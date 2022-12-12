@@ -4,6 +4,13 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdk-android-lib-promise.iml" filepath="$PROJECT_DIR$/.idea/modules/sdk-android-lib-promise.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.iml" filepath="$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.iml" filepath="$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.main.iml" filepath="$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/promise-ktx/sdk-android-lib-promise.promise-ktx.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.main.iml" filepath="$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/promise/sdk-android-lib-promise.promise.unitTest.iml" />
     </modules>
   </component>
 </project>

@@ -3,8 +3,14 @@ plugins {
     id "kotlin-android"
 }
 
+android {
+    namespace "com.voxeet.promise"
+}
+
 dependencies {
     implementation dolbyio.androidx.annotation
+    testImplementation dolbyio.mockito.kotlin
+    testImplementation dolbyio.mockito.core
 }
 
 apply from: gradle.dolbyio.files.publishing

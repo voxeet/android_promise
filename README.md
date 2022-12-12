@@ -9,7 +9,8 @@
 In your build.gradle file, add the following :
 
 ```
-implementation "com.voxeet:promise:2.2"
+implementation "com.voxeet:promise:${version}"
+implementation "com.voxeet:promise-ktx:${version}"
 ```
 
 ## Usage
