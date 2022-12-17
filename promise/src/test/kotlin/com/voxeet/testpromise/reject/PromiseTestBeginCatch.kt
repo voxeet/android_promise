@@ -28,7 +28,7 @@ class PromiseTestBeginCatch {
                 solver.reject(e)
             }
             println("you should see this :p")
-        }.error<Any> { error: Throwable ->
+        }.error { error: Throwable ->
             println("error catched")
             catched[0] = true
             error.printStackTrace()

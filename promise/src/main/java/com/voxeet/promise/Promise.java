@@ -191,9 +191,9 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         });
     }
 
-    public <TYPE_RESULT> void error(ErrorPromise to_error) {
+    public void error(ErrorPromise to_error) {
         PromiseDebug.log("Promise", "then error");
-        PromiseInOut<TYPE, TYPE_RESULT> promise_inout = new PromiseInOut<>(to_error);
+        PromiseInOut<TYPE, ?> promise_inout = new PromiseInOut<>(to_error);
         promise_inout.setParent(mPromiseInOut);
         mPromiseInOut.setChild((PromiseInOut<TYPE, Object>) promise_inout);
 
