@@ -8,6 +8,6 @@ import com.voxeet.promise.solve.params.Resolve;
 public interface ResolveReject<TYPE> {
 
     void onCall(@NonNull Resolve<TYPE> resolve,
-                @NonNull Reject reject);
+                @NonNull Reject reject) throws Throwable;
 
 }

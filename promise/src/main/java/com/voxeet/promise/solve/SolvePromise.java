@@ -9,5 +9,5 @@ import com.voxeet.promise.Promise;
  */
 public interface SolvePromise<TYPE> {
     @NonNull
-    Promise<TYPE> onCall();
+    Promise<TYPE> onCall() throws Throwable;
 }

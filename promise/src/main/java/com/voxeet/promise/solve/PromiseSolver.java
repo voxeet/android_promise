@@ -15,6 +15,6 @@ public interface PromiseSolver<TYPE> {
      *
      * @param solver a solver which resolve or reject method must be called
      */
-    void onCall(@NonNull Solver<TYPE> solver);
+    void onCall(@NonNull Solver<TYPE> solver) throws Throwable;
 
 }

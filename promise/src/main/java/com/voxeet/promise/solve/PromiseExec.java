@@ -15,6 +15,6 @@ public interface PromiseExec<TYPE, RESULT> {
      * @param result a valid or nullable result from the previous resolution
      * @param solver a solver which resolve or reject method must be called
      */
-    void onCall(@Nullable TYPE result, @NonNull Solver<RESULT> solver);
+    void onCall(@Nullable TYPE result, @NonNull Solver<RESULT> solver) throws Throwable;
 
 }
