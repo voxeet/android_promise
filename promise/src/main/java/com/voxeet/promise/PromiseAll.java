@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by kevinleperf on 15/04/2018.
- */
-
 class PromiseAll<TYPE_EXECUTE> extends AbstractPromiseMulti<TYPE_EXECUTE> {
 
     private AtomicInteger mDone = new AtomicInteger(0);

@@ -21,6 +21,8 @@ import com.voxeet.promise.solve.params.Resolve;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import kotlin.jvm.functions.Function1;
+
 public class Promise<TYPE> extends AbstractPromise<TYPE> {
 
     @Nullable
@@ -118,6 +120,13 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(PromiseExec<TYPE, TYPE_RESULT> to_resolve) {
         PromiseDebug.log("Promise", "then PromiseExec");
         return then(new PromiseInOut<>(to_resolve));
+    }
+
+    public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(final Function1<TYPE, TYPE_RESULT> function1) {
+        return then((resolve, solver) -> {
+            Object resultOrNothing = function1.invoke(resolve);
+            solver.resolve((TYPE_RESULT) resultOrNothing);
+        });
     }
 
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(final TYPE_RESULT resolved) {

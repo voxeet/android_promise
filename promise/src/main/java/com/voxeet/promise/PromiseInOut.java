@@ -11,6 +11,8 @@ import com.voxeet.promise.solve.ThenPromise;
 import com.voxeet.promise.solve.ThenValue;
 import com.voxeet.promise.solve.ThenVoid;
 
+import kotlin.jvm.functions.Function1;
+
 /**
  * Promise's logic management
  * Take a type "in" to create a type "out"
@@ -49,6 +51,16 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * Public management
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+    public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE> then(final Function1<TYPE_RESULT, EXPECTED_TYPE> function1) {
+        System.out.println("actually receiving a promise exec here !");
+
+        return then((resolve, solver) -> {
+            Object resultOrNothing = function1.invoke(resolve);
+            solver.resolve((EXPECTED_TYPE) resultOrNothing);
+        });
+    }
 
     @Override
     public <TYPE_RESULT1> PromiseInOut<TYPE_RESULT, TYPE_RESULT1> then(Promise<TYPE_RESULT1> to_resolve) {
@@ -96,6 +108,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
         return then((result, solver) -> {
             try {
                 likeCallable.call(result);
+                solver.resolve((Void) null);
             } catch (Throwable e) {
                 solver.reject(e);
             }
@@ -109,20 +122,10 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     }
 
     public void execute() {
-        //top -> down
-        PromiseDebug.log("PromiseInOut", "executing promise ----------");
-        PromiseDebug.log("PromiseInOut", "having inout parent := " + mPromiseInOutParent);
-        PromiseDebug.log("PromiseInOut", "having inout parent := " + mPromise);
-        PromiseDebug.log("PromiseInOut", "executing promise ----------");
         if (null != mPromiseInOutParent) {
             mPromiseInOutParent.execute();
         } else if (mPromise != null) {
-            Promise.getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    mPromise.resolve();
-                }
-            });
+            HandlerFactory.getHandler().post(() -> mPromise.resolve());
         }
     }
 
@@ -140,7 +143,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     }
 
     void execute(final Promise promise) {
-        Promise.getHandler().post(() -> {
+        HandlerFactory.getHandler().post(() -> {
             if (promise == mPromise) {
                 postAfterOnResult();
             }
@@ -170,13 +173,13 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
         if (mSimiliError != null) {
             mSimiliError.onError(error);
         } else if (mPromiseInOutChild != null) {
-            Promise.getHandler().post(() -> mPromiseInOutChild.postAfterOnError(error));
+            HandlerFactory.getHandler().post(() -> mPromiseInOutChild.postAfterOnError(error));
         }
     }
 
     private void postAfterOnResult() {
         if (mSimiliPromise != null) {
-            Promise.getHandler().post(new Runnable() {
+            HandlerFactory.getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -212,7 +215,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                 }
             });
         } else if (mPromise != null) {
-            Promise.getHandler().post(new Runnable() {
+            HandlerFactory.getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -246,7 +249,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     }
 
     private void postResult(final TYPE_RESULT result) {
-        Promise.getHandler().post(() -> {
+        HandlerFactory.getHandler().post(() -> {
             if (mPromiseInOutChild != null)
                 mPromiseInOutChild.setResult(result);
         });

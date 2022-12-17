@@ -4,14 +4,15 @@ import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.await
 import com.voxeet.promise.solve.Solver
-import com.voxeet.promise.solve.ThenVoid
 import com.voxeet.testpromise.mockedhandler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.fail
 import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PromiseTestSimpleAllReject {
     @Before
     fun setHandler() {
@@ -19,9 +20,7 @@ class PromiseTestSimpleAllReject {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() = runTest {
-        var called = false
         val catched = booleanArrayOf(true)
 
         try {
@@ -33,11 +32,11 @@ class PromiseTestSimpleAllReject {
                         solver.reject(e)
                     }
                 }, Promise.resolve("called 2")
-            ).then(ThenVoid<List<String?>> { result: List<String?> ->
+            ).then { result: List<String?> ->
                 println(result.toTypedArray().contentToString())
                 catched[0] = false
-                called = true
-            }).await()
+                true
+            }.await()
 
             fail("expected error")
         } catch (e: NullPointerException) {
