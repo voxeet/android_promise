@@ -2,7 +2,8 @@ package com.voxeet.testpromise.resolve
 
 import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
-import com.voxeet.promise.solve.*
+import com.voxeet.promise.solve.PromiseExec
+import com.voxeet.promise.solve.Solver
 import com.voxeet.testpromise.mockedhandler
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +17,6 @@ class PromiseTestWithSumDelayed {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() {
         val latch = CountDownLatch(1)
         val final_result = intArrayOf(0)

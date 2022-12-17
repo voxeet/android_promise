@@ -16,7 +16,6 @@ class PromiseTestWithSum {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() {
         val latch = CountDownLatch(1)
         val final_result = intArrayOf(0)

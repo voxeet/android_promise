@@ -16,7 +16,6 @@ class PromiseSubThrowError {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() {
         val mException = arrayOf<IllegalStateException?>(null)
         val latch = CountDownLatch(1)

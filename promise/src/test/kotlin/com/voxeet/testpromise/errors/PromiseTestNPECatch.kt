@@ -4,12 +4,14 @@ import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.awaitNonNull
 import com.voxeet.testpromise.mockedhandler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.fail
 import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PromiseTestNPECatch {
     @Before
     fun setHandler() {

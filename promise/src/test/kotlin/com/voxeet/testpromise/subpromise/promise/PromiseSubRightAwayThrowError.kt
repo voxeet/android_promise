@@ -16,7 +16,6 @@ class PromiseSubRightAwayThrowError {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() {
         val mException = arrayOf<IllegalStateException?>(null)
         val latch = CountDownLatch(1)
@@ -31,7 +30,7 @@ class PromiseSubRightAwayThrowError {
         }
         println("executing test")
         Promise { solver: Solver<Int?> -> solver.resolve(resolve_later) }
-            .error<Any> { error: Throwable ->
+            .error { error: Throwable ->
                 println("error catched")
                 equals[0] = mException[0] === error
                 error.printStackTrace()

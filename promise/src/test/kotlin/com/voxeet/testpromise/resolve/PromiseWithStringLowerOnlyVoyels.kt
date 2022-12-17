@@ -18,7 +18,6 @@ class PromiseWithStringLowerOnlyVoyels {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() {
         val latch = CountDownLatch(1)
         val equals = booleanArrayOf(false)

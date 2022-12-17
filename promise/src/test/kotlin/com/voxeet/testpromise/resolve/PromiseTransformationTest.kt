@@ -18,7 +18,6 @@ class PromiseTransformationTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun addition_isCorrect() {
         val test_result = intArrayOf(0)
         val latch = CountDownLatch(1)

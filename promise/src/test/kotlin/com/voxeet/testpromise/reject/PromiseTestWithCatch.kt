@@ -16,7 +16,6 @@ class PromiseTestWithCatch {
     }
 
     @Test
-    @Throws(InterruptedException::class)
     fun test() {
         val latch = CountDownLatch(1)
         val catched = booleanArrayOf(false)
