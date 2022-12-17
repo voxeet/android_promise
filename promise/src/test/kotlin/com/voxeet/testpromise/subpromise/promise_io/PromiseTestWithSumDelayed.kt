@@ -1,5 +1,6 @@
 package com.voxeet.testpromise.subpromise.promise_io
 
+import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.solve.PromiseSolver
 import com.voxeet.promise.solve.Solver
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 class PromiseTestWithSumDelayed {
     @Before
     fun setHandler() {
-        Promise.setHandler(mockedhandler())
+        HandlerFactory.setHandler(mockedhandler())
     }
 
     @Test

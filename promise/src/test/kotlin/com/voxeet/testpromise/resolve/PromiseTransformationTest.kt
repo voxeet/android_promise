@@ -1,5 +1,6 @@
 package com.voxeet.testpromise.resolve
 
+import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.solve.Solver
 import com.voxeet.promise.solve.ThenValue
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 class PromiseTransformationTest {
     @Before
     fun setHandler() {
-        Promise.setHandler(mockedhandler())
+        HandlerFactory.setHandler(mockedhandler())
     }
 
     @Test

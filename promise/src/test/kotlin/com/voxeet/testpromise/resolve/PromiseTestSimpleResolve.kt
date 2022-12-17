@@ -1,5 +1,6 @@
 package com.voxeet.testpromise.resolve
 
+import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.solve.Solver
 import com.voxeet.testpromise.mockedhandler
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class PromiseTestSimpleResolve {
     @Before
     fun setHandler() {
-        Promise.setHandler(mockedhandler())
+        HandlerFactory.setHandler(mockedhandler())
     }
 
     @Test

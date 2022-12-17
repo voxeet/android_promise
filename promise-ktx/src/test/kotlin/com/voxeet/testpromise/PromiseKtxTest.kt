@@ -1,8 +1,10 @@
 package com.voxeet.testpromise
 
+import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.await
 import com.voxeet.promise.awaitNonNull
+import com.voxeet.promise.solve.ThenValue
 import com.voxeet.promise.solve.ThenVoid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -16,7 +18,7 @@ class PromiseKtxTest {
 
     @BeforeEach
     fun onBeforeEach() {
-        Promise.setHandler(mockedhandler())
+        HandlerFactory.setHandler(mockedhandler())
     }
 
     @Test
@@ -35,19 +37,38 @@ class PromiseKtxTest {
 
         assertTrue(anotherValue!!)
         assertTrue(called)
+
+        try {
+            Promise.resolve(false).awaitNonNull()
+        } catch (e: NullPointerException) {
+            fail("this should have worked")
+        }
+
+        try {
+            Promise.resolve<Boolean>(true).then(ThenValue { it }).awaitNonNull()
+        } catch (e: NullPointerException) {
+            fail("this should have worked")
+        }
     }
 
     @Test
     fun `test making an exception`() = runTest {
         try {
-            val value = Promise.resolve(null).awaitNonNull()
+            Promise.resolve(null).awaitNonNull()
             fail("this should have failed")
-        } catch (e: java.lang.IllegalStateException) {
+        } catch (e: NullPointerException) {
             // expected
         }
 
         try {
-            val value = Promise.reject<Boolean>(java.lang.IllegalStateException("exception !")).await()
+            Promise.resolve<Boolean>(null).then(ThenValue { it }).awaitNonNull()
+            fail("this should have failed")
+        } catch (e: NullPointerException) {
+            // expected
+        }
+
+        try {
+            Promise.reject<Boolean>(java.lang.IllegalStateException("exception !")).await()
             fail("this should have failed")
         } catch (e: java.lang.IllegalStateException) {
             // expected
@@ -55,7 +76,7 @@ class PromiseKtxTest {
 
         var called = false
         try {
-            val value = Promise<Boolean> { solver ->
+            Promise<Boolean> { solver ->
                 mockedhandler().postDelayed({
                     called = true
                     solver.reject(java.lang.IllegalStateException("some exception"))
@@ -73,7 +94,7 @@ class PromiseKtxTest {
     fun `check that resolving from a void will still be ok`() = runTest {
         try {
             var called = false
-            val value = Promise { solver ->
+            Promise { solver ->
                 called = true
                 solver.resolve(true)
             }.then(ThenVoid {
@@ -86,7 +107,7 @@ class PromiseKtxTest {
 
         try {
             var called = false
-            val value = Promise { solver ->
+            Promise { solver ->
                 mockedhandler().postDelayed({
                     called = true
                     solver.resolve(true)

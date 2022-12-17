@@ -7,10 +7,16 @@ android {
     namespace "com.voxeet.promise"
 }
 
+ext {
+    sonarqubePrefix = ""
+}
+
 dependencies {
     implementation dolbyio.androidx.annotation
     testImplementation dolbyio.mockito.kotlin
     testImplementation dolbyio.mockito.core
+
+    testImplementation project(":promise-ktx")
 }
 
 apply from: gradle.dolbyio.files.publishing

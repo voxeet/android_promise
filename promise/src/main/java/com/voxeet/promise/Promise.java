@@ -1,7 +1,6 @@
 package com.voxeet.promise;
 
 import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,22 +34,31 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         return new PromiseAll<T>(promises).all();
     }
 
-    private static Handler sHandler;
-
+    /**
+     * Set the handler to spawn the solver into
+     *
+     * @param handler the handler to set the solver to
+     * @deprecated replaced by {@link HandlerFactory#setHandler(Handler)}
+     */
+    @Deprecated
     public static void setHandler(@NonNull Handler handler) {
-        sHandler = handler;
+        HandlerFactory.setHandler(handler);
     }
 
     public static void setExecutorService(@NonNull ExecutorService executorService) {
         sExecutorService = executorService;
     }
 
+    /**
+     * Get the current handler set to spawn the solvers into
+     *
+     * @return the handler instance set to a specifc looper
+     * @deprecated replaced by {@link HandlerFactory#getHandler()}
+     */
+    @Deprecated
     @NonNull
     public static Handler getHandler() {
-        if (sHandler == null) {
-            sHandler = new Handler(Looper.getMainLooper());
-        }
-        return sHandler;
+        return HandlerFactory.getHandler();
     }
 
     private PromiseSolver<TYPE> mSolver;
