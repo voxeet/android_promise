@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
+import org.junit.platform.commons.util.ReflectionUtils
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PromiseQueueTest {
@@ -47,6 +48,28 @@ class PromiseQueueTest {
 
         assertTrue(promises[1].awaitNonNull())
         assertEquals(2, calls)
+    }
+
+    @Test
+    fun `test forcing a next in a invalid step is a noop`() = runTest {
+        val queue = PromiseQueue()
+
+        val next = ReflectionUtils.findMethod(queue.javaClass, "next")
+            .get()
+
+        next.isAccessible = true
+        next.invoke(queue)
+    }
+
+    @Test
+    fun `test forcing a crash in the next when the noop is normally there`() = runTest {
+        val queue = PromiseQueue()
+
+        val next = ReflectionUtils.findMethod(queue.javaClass, "next")
+            .get()
+
+        next.isAccessible = true
+        next.invoke(queue)
     }
 
     @Test
