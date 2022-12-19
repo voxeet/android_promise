@@ -33,6 +33,11 @@ jobs:
           echo "PROMISE_CONFIGURED = $PROMISE_CONFIGURED"
           echo "VERSION_CONFIGURED = $VERSION_CONFIGURED"
 
+      - name: Test
+        id: test
+        run: |
+          ./gradlew -PSUFFIX=$PROMISE_SUFFIX jacocoProjectReport
+
       - name: Build and Install
         id: build
         run: |
