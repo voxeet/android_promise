@@ -21,10 +21,8 @@ class PromiseWithStringLowerOnlyVoyels {
     fun test() {
         val latch = CountDownLatch(1)
         val equals = booleanArrayOf(false)
-        Promise { solver: Solver<String?> ->
-            solver.resolve(
-                "TintInTotoTutu"
-            )
+        Promise { solver: Solver<String> ->
+            solver.resolve("TintInTotoTutu")
         }.then { result: String?, solver: Solver<String?> ->
             solver.resolve(
                 result!!.lowercase(Locale.getDefault())

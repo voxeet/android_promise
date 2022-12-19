@@ -6,12 +6,14 @@ import com.voxeet.promise.await
 import com.voxeet.promise.solve.Solver
 import com.voxeet.promise.solve.ThenVoid
 import com.voxeet.testpromise.mockedhandler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PromiseTestSimpleResolve {
     @Before
     fun setHandler() {
