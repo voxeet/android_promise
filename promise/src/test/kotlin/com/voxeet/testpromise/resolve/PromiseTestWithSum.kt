@@ -2,7 +2,6 @@ package com.voxeet.testpromise.resolve
 
 import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
-import com.voxeet.promise.solve.Solver
 import com.voxeet.promise.solve.ThenVoid
 import com.voxeet.testpromise.mockedhandler
 import org.junit.Before
@@ -45,9 +44,9 @@ class PromiseTestWithSum {
         val latch = CountDownLatch(1)
         var result = 0
 
-        Promise.resolve(10).then { res: Int, solver: Solver<Int> ->
+        Promise.resolve(10).then {
             println("---------")
-            result = 10 + res
+            result = 10 + it
             latch.countDown()
         }.error { error: Throwable ->
             println("error catched")

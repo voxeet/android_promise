@@ -37,6 +37,8 @@ jobs:
         id: test
         run: |
           ./gradlew -PSUFFIX=$PROMISE_SUFFIX jacocoProjectReport
+          folders=`find . -path "*/build/test-results/testDebugUnitTest" -type d`
+          for folder in $folders; do grep -r "<failure" $folder && exit 1; done
 
       - name: Build and Install
         id: build
