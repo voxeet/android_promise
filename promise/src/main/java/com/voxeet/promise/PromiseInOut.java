@@ -52,10 +52,7 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
      * Public management
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
     public <EXPECTED_TYPE> PromiseInOut<TYPE_RESULT, EXPECTED_TYPE> then(final Function1<TYPE_RESULT, EXPECTED_TYPE> function1) {
-        System.out.println("actually receiving a promise exec here !");
-
         return then((resolve, solver) -> {
             Object resultOrNothing = function1.invoke(resolve);
             solver.resolve((EXPECTED_TYPE) resultOrNothing);

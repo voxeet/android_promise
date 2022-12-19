@@ -129,10 +129,6 @@ public class Promise<TYPE> extends AbstractPromise<TYPE> {
         });
     }
 
-    public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(final TYPE_RESULT resolved) {
-        return then((result, solver) -> solver.resolve(resolved));
-    }
-
     @Override
     public <TYPE_RESULT> PromiseInOut<TYPE, TYPE_RESULT> then(Promise<TYPE_RESULT> to_resolve) {
         return then(super.then(to_resolve));
