@@ -35,7 +35,7 @@ class PromiseKtxTest {
         val anotherValue = Promise<Boolean> { solver ->
             mockedhandler().postDelayed({
                 called = true
-                solver.resolve(null)
+                solver.resolve(true)
             }, 2000)
         }.awaitNonNull()
 
