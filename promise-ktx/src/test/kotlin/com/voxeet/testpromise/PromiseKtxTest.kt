@@ -4,10 +4,12 @@ import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.await
 import com.voxeet.promise.awaitNonNull
+import com.voxeet.promise.awaitNullable
 import com.voxeet.promise.solve.ThenValue
 import com.voxeet.promise.solve.ThenVoid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
@@ -28,18 +30,45 @@ class PromiseKtxTest {
         assertTrue(value!!)
 
         var called = false
+        var calledNullable = false
+        var calledNonNull = false
         val anotherValue = Promise<Boolean> { solver ->
             mockedhandler().postDelayed({
                 called = true
+                solver.resolve(null)
+            }, 2000)
+        }.awaitNonNull()
+
+        val anotherValueFromNullable = Promise<Boolean?> { solver ->
+            mockedhandler().postDelayed({
+                calledNullable = true
+                solver.resolve(null)
+            }, 2000)
+        }.awaitNullable()
+
+        val anotherValueFromNonNull = Promise<Boolean> { solver ->
+            mockedhandler().postDelayed({
+                calledNonNull = true
                 solver.resolve(true)
             }, 2000)
-        }.await()
+        }.awaitNonNull()
 
-        assertTrue(anotherValue!!)
+        assertTrue(anotherValue)
+        assertNull(anotherValueFromNullable)
+        assertTrue(anotherValueFromNonNull)
+
         assertTrue(called)
+        assertTrue(calledNullable)
+        assertTrue(calledNonNull)
 
         try {
             Promise.resolve(false).awaitNonNull()
+        } catch (e: NullPointerException) {
+            fail("this should have worked")
+        }
+
+        try {
+            Promise.resolve(null as String?).awaitNullable()
         } catch (e: NullPointerException) {
             fail("this should have worked")
         }
@@ -54,16 +83,42 @@ class PromiseKtxTest {
     @Test
     fun `test making an exception`() = runTest {
         try {
-            Promise.resolve(null).awaitNonNull()
+            Promise.resolve(null as String).awaitNonNull()
             fail("this should have failed")
         } catch (e: NullPointerException) {
             // expected
         }
 
         try {
+            val str = Promise.resolve(null as String?).awaitNullable()
+        } catch (e: Throwable) {
+            fail("this shouldn't have failed")
+        }
+
+        try {
+            Promise.resolve<Boolean?>(null).then(ThenValue { it }).awaitNullable()
+        } catch (e: Throwable) {
+            fail("this shouldn't have failed")
+        }
+
+        try {
             Promise.resolve<Boolean>(null).then(ThenValue { it }).awaitNonNull()
             fail("this should have failed")
         } catch (e: NullPointerException) {
+            // expected
+        }
+
+        try {
+            Promise.reject<Boolean>(java.lang.IllegalStateException("exception !")).awaitNonNull()
+            fail("this should have failed")
+        } catch (e: java.lang.IllegalStateException) {
+            // expected
+        }
+
+        try {
+            Promise.reject<Boolean>(java.lang.IllegalStateException("exception !")).awaitNullable()
+            fail("this should have failed")
+        } catch (e: java.lang.IllegalStateException) {
             // expected
         }
 
@@ -81,7 +136,7 @@ class PromiseKtxTest {
                     called = true
                     solver.reject(java.lang.IllegalStateException("some exception"))
                 }, 2000)
-            }.await()
+            }.awaitNullable()
 
             fail("this should have failed")
         } catch (e: java.lang.IllegalStateException) {
