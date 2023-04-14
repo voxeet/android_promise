@@ -1,5 +1,6 @@
 package com.voxeet.testpromise
 
+import com.voxeet.promise.Configuration
 import com.voxeet.promise.HandlerFactory
 import com.voxeet.promise.Promise
 import com.voxeet.promise.await
@@ -9,6 +10,7 @@ import com.voxeet.promise.solve.ThenValue
 import com.voxeet.promise.solve.ThenVoid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
@@ -144,6 +146,53 @@ class PromiseKtxTest {
         }
         assertTrue(called)
     }
+
+    @Test
+    fun `check throwing an exception inside the continuation twice is not generating issue`() =
+        runTest {
+            var called = false
+            var multipleRethrowsCalledTimes = 0
+
+            listOf(Configuration.OnMultipleSolverResolution { obj, exception ->
+                println("rethrow called with $obj ${exception.message}")
+                multipleRethrowsCalledTimes++
+            }, null).forEach {
+                // we reset the multiple resolution manager
+                Configuration.onOnMultipleSolverResolution = it
+
+                val rethrowAfter = 2000L
+                val waitForBothRethrows = 5000L
+
+                try {
+                    Promise<Boolean> { solver ->
+                        called = true
+
+                        mockedhandler().postDelayed({
+                            solver.reject(NullPointerException("Crashing on purpose"))
+                        }, rethrowAfter)
+
+                        solver.reject(NullPointerException("Crashing on purpose"))
+                    }.await()
+
+                    called = false
+                } catch (e: NullPointerException) {
+                    //
+                }
+
+                try {
+                    Promise<Boolean> { solver ->
+                        mockedhandler().postDelayed({
+                            solver.resolve(true)
+                        }, waitForBothRethrows)
+                    }.awaitNullable()
+                } catch (e: java.lang.IllegalStateException) {
+                    // not expected
+                }
+                assertTrue(called)
+            }
+
+            assertEquals(1, multipleRethrowsCalledTimes)
+        }
 
     @Test
     fun `check that resolving from a void will still be ok`() = runTest {

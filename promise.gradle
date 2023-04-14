@@ -2,5 +2,5 @@ def version_suffixed = { String version ->  project.hasProperty("SUFFIX") && pro
         ? "${version}-${project.SUFFIX}"
         : "${version}" }
 
-def version="2.8.1"
+def version="2.9.0"
 rootProject.ext.version = version_suffixed(version)

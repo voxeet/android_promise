@@ -27,6 +27,8 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     private ErrorPromise mSimiliError;
     private PromiseInOut<Object, TYPE> mPromiseInOutParent;
     private PromiseInOut<TYPE_RESULT, Object> mPromiseInOutChild;
+    private boolean mPostedToChild = false;
+
     private TYPE mResult;
 
     private PromiseInOut() {
@@ -169,7 +171,14 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     private void postAfterOnError(final Throwable error) {
         if (mSimiliError != null) {
             mSimiliError.onError(error);
+        } else if (mPostedToChild) {
+            // we discard multiple calls of solver.resolve()
+            Configuration.OnMultipleSolverResolution warning = Configuration.onOnMultipleSolverResolution;
+            if (null != warning) {
+                warning.onWarning(error, new IllegalStateException("onError was triggered when it shouldn't have"));
+            }
         } else if (mPromiseInOutChild != null) {
+            mPostedToChild = true;
             HandlerFactory.getHandler().post(() -> mPromiseInOutChild.postAfterOnError(error));
         }
     }
@@ -189,7 +198,6 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                             @Override
                             public void resolve(@NonNull Promise<TYPE_RESULT> promise) {
                                 promise.then((result, solver) -> resolve(result)).error(this::reject);
-
                             }
 
                             @Override
@@ -247,6 +255,18 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
 
     private void postResult(final TYPE_RESULT result) {
         HandlerFactory.getHandler().post(() -> {
+            if (mPostedToChild) {
+                // we discard multiple calls of solver.resolve()
+                Configuration.OnMultipleSolverResolution warning = Configuration.onOnMultipleSolverResolution;
+                if (null != warning) {
+                    warning.onWarning(result, new IllegalStateException("then called when it shouldn't have"));
+                }
+
+                return;
+            }
+
+            mPostedToChild = true;
+
             if (mPromiseInOutChild != null)
                 mPromiseInOutChild.setResult(result);
         });
