@@ -171,13 +171,19 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
     private void postAfterOnError(final Throwable error) {
         if (mSimiliError != null) {
             mSimiliError.onError(error);
-        } else if (mPostedToChild) {
-            // we discard multiple calls of solver.resolve()
-            Configuration.OnMultipleSolverResolution warning = Configuration.onOnMultipleSolverResolution;
-            if (null != warning) {
-                warning.onWarning(error, new IllegalStateException("onError was triggered when it shouldn't have"));
-            }
         } else if (mPromiseInOutChild != null) {
+            if (mPostedToChild) {
+                // we discard multiple calls of solver.resolve()
+                Configuration.OnMultipleSolverResolution warning = Configuration.onOnMultipleSolverResolution;
+                if (null != warning) {
+                    warning.onWarning(error, new IllegalStateException("onError was triggered when it shouldn't have, future version will make this impossible"));
+                }
+
+                if (!Configuration.enableMultipleResolveReject) {
+                    // in such case we don't allow resolving back
+                    return;
+                }
+            }
             mPostedToChild = true;
             HandlerFactory.getHandler().post(() -> mPromiseInOutChild.postAfterOnError(error));
         }
@@ -259,10 +265,13 @@ public class PromiseInOut<TYPE, TYPE_RESULT> extends AbstractPromise<TYPE_RESULT
                 // we discard multiple calls of solver.resolve()
                 Configuration.OnMultipleSolverResolution warning = Configuration.onOnMultipleSolverResolution;
                 if (null != warning) {
-                    warning.onWarning(result, new IllegalStateException("then called when it shouldn't have"));
+                    warning.onWarning(result, new IllegalStateException("then called when it shouldn't have, future versions will make this impossible"));
                 }
 
-                return;
+                if (!Configuration.enableMultipleResolveReject) {
+                    // in such case we don't allow resolving back
+                    return;
+                }
             }
 
             mPostedToChild = true;

@@ -150,48 +150,54 @@ class PromiseKtxTest {
     @Test
     fun `check throwing an exception inside the continuation twice is not generating issue`() =
         runTest {
-            var called = false
-            var multipleRethrowsCalledTimes = 0
+            listOf(true, false).forEach { enableMultipleResolveReject ->
+                var called = false
+                var multipleRethrowsCalledTimes = 0
+                listOf(Configuration.OnMultipleSolverResolution { obj, exception ->
+                    println("rethrow called with $obj ${exception.message}")
+                    multipleRethrowsCalledTimes++
+                }, null).forEach {
+                    // we reset the multiple resolution manager
+                    Configuration.onOnMultipleSolverResolution = it
+                    Configuration.enableMultipleResolveReject = enableMultipleResolveReject
 
-            listOf(Configuration.OnMultipleSolverResolution { obj, exception ->
-                println("rethrow called with $obj ${exception.message}")
-                multipleRethrowsCalledTimes++
-            }, null).forEach {
-                // we reset the multiple resolution manager
-                Configuration.onOnMultipleSolverResolution = it
+                    val rethrowAfter = 2000L
+                    val waitForBothRethrows = 5000L
 
-                val rethrowAfter = 2000L
-                val waitForBothRethrows = 5000L
+                    try {
+                        Promise<Boolean> { solver ->
+                            called = true
 
-                try {
-                    Promise<Boolean> { solver ->
-                        called = true
+                            mockedhandler().postDelayed({
+                                solver.reject(NullPointerException("Crashing on purpose"))
+                            }, rethrowAfter)
 
-                        mockedhandler().postDelayed({
                             solver.reject(NullPointerException("Crashing on purpose"))
-                        }, rethrowAfter)
+                        }.await()
 
-                        solver.reject(NullPointerException("Crashing on purpose"))
-                    }.await()
+                        // and in case that we are testing if we disallow resolving multiple time
+                        // we want to make sure the test will fail if we let it go by mistake
+                        if (!Configuration.enableMultipleResolveReject) {
+                            called = false
+                        }
+                    } catch (e: NullPointerException) {
+                        //
+                    }
 
-                    called = false
-                } catch (e: NullPointerException) {
-                    //
+                    try {
+                        Promise<Boolean> { solver ->
+                            mockedhandler().postDelayed({
+                                solver.resolve(true)
+                            }, waitForBothRethrows)
+                        }.awaitNullable()
+                    } catch (e: java.lang.IllegalStateException) {
+                        // not expected
+                    }
+                    assertTrue(called)
                 }
 
-                try {
-                    Promise<Boolean> { solver ->
-                        mockedhandler().postDelayed({
-                            solver.resolve(true)
-                        }, waitForBothRethrows)
-                    }.awaitNullable()
-                } catch (e: java.lang.IllegalStateException) {
-                    // not expected
-                }
-                assertTrue(called)
+                assertEquals(1, multipleRethrowsCalledTimes)
             }
-
-            assertEquals(1, multipleRethrowsCalledTimes)
         }
 
     @Test
