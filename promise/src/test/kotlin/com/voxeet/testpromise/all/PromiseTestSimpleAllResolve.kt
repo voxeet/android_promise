@@ -6,6 +6,7 @@ import com.voxeet.promise.await
 import com.voxeet.promise.awaitNonNull
 import com.voxeet.promise.solve.Solver
 import com.voxeet.testpromise.mockedhandler
+import com.voxeet.testpromise.registerConfigurationForNoRethrowResolve
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -15,6 +16,7 @@ class PromiseTestSimpleAllResolve {
     @Before
     fun setHandler() {
         HandlerFactory.setHandler(mockedhandler())
+        registerConfigurationForNoRethrowResolve()
     }
 
     @Test

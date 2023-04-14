@@ -5,6 +5,7 @@ import com.voxeet.promise.Promise
 import com.voxeet.promise.await
 import com.voxeet.promise.solve.Solver
 import com.voxeet.testpromise.mockedhandler
+import com.voxeet.testpromise.registerConfigurationForNoRethrowResolve
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -17,6 +18,7 @@ class PromiseTestNPECatch2 {
     @Before
     fun setHandler() {
         HandlerFactory.setHandler(mockedhandler())
+        registerConfigurationForNoRethrowResolve()
     }
 
     @Test

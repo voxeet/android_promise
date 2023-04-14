@@ -6,6 +6,7 @@ import com.voxeet.promise.solve.PromiseSolver
 import com.voxeet.promise.solve.Solver
 import com.voxeet.promise.solve.ThenPromise
 import com.voxeet.testpromise.mockedhandler
+import com.voxeet.testpromise.registerConfigurationForNoRethrowResolve
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
@@ -15,6 +16,7 @@ class PromiseTestWithSumDelayed {
     @Before
     fun setHandler() {
         HandlerFactory.setHandler(mockedhandler())
+        registerConfigurationForNoRethrowResolve()
     }
 
     @Test

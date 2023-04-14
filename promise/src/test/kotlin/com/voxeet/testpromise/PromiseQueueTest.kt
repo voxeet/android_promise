@@ -16,6 +16,7 @@ class PromiseQueueTest {
     @BeforeEach
     fun beforeTest() {
         HandlerFactory.setHandler(mockedhandler())
+        registerConfigurationForNoRethrowResolve()
     }
 
     @Test
